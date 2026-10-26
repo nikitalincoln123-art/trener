@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Тренер — домашние тренировки</title>
-<meta name="description" content="Помощник по домашним тренировкам для спины, рук и ног: фото, анимированные схемы, инструкции и видео.">
+<meta name="description" content="Помощник по домашним тренировкам для спины, рук и ног: живые анимированные схемы, инструкции и видео.">
 <style>
   :root{
     --bg:#0e1320;--panel:#161d2e;--panel2:#1c2436;--line:#2a3350;
     --text:#eaf0fa;--muted:#96a3c0;--accent:#52a8ff;--accent2:#7fe0a0;
-    --red:#ff5353;--radius:16px;--sh:0 10px 30px rgba(0,0,0,.35);
+    --red:#ff5353;--sh:0 12px 34px rgba(0,0,0,.38);
   }
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
@@ -25,18 +25,22 @@
   .btn.ghost{background:var(--panel2);color:var(--text);border:1px solid var(--line)}
   .btn.ghost:hover{border-color:var(--accent)}
   .btn.small{padding:9px 13px;font-size:13px;border-radius:10px}
-  .btn.vid{background:#ff4e4e}
-  .hero{position:relative;border-radius:20px;overflow:hidden;margin-bottom:26px;box-shadow:var(--sh)}
-  .hero img{display:block;width:100%;height:240px;object-fit:cover}
-  .hero .ov{position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,19,32,.10),rgba(14,19,32,.86))}
-  .hero .tx{position:absolute;left:20px;right:20px;bottom:18px}
-  .hero h1{margin:0;font-size:clamp(24px,5vw,38px);line-height:1.1}
-  .hero p{margin:8px 0 0;color:#d7e0f2;font-size:clamp(14px,2.4vw,17px);max-width:620px}
-  .grid-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
-  .card{position:relative;border-radius:18px;overflow:hidden;cursor:pointer;text-decoration:none;color:inherit;border:1px solid var(--line);box-shadow:var(--sh);transition:transform .12s,border-color .15s}
+  .btn.vid{background:var(--red)}
+  .hero{position:relative;border-radius:22px;overflow:hidden;margin-bottom:26px;padding:34px 24px;background:
+    radial-gradient(1200px 300px at 20% -60%, rgba(82,168,255,.25), transparent 60%),
+    radial-gradient(900px 300px at 90% 120%, rgba(127,224,160,.15), transparent 55%),
+    var(--panel);border:1px solid var(--line);box-shadow:var(--sh)}
+  .hero h1{margin:0;font-size:clamp(26px,5.4vw,42px);line-height:1.08;letter-spacing:.3px}
+  .hero p{margin:12px 0 0;color:var(--muted);font-size:clamp(15px,2.5vw,18px);max-width:640px}
+  .hero .pulse{display:inline-flex;align-items:center;gap:8px;color:var(--accent2);font-size:13px;font-weight:700;margin-top:16px}
+  .hero .pulse i{width:10px;height:10px;border-radius:50%;background:var(--accent2);animation:pulse 1.6s infinite}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+  .grid-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+  .card{position:relative;border-radius:18px;overflow:hidden;cursor:pointer;text-decoration:none;color:inherit;border:1px solid var(--line);box-shadow:var(--sh);transition:transform .12s,border-color .15s;background:var(--panel)}
   .card:hover{transform:translateY(-4px);border-color:var(--accent)}
-  .card img{display:block;width:100%;height:150px;object-fit:cover}
-  .card .b{padding:14px 16px 16px;background:var(--panel)}
+  .card .top{padding:16px 16px 14px;background:var(--panel2);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:center;min-height:190px}
+  .card .top svg{width:150px;height:170px}
+  .card .b{padding:14px 16px 16px}
   .card h3{margin:0 0 4px;font-size:19px}
   .card p{margin:0 0 10px;color:var(--muted);font-size:13.5px}
   .card .tags{display:flex;gap:6px;flex-wrap:wrap}
@@ -46,31 +50,37 @@
   @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
   .crumb{display:flex;align-items:center;gap:10px;margin-bottom:6px;flex-wrap:wrap}
   .crumb .btn{padding:8px 12px;font-size:13px}
-  .cat-head{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:6px 0 16px}
+  .cat-head{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:8px 0 16px}
   .cat-head h2{margin:0;font-size:clamp(22px,4vw,32px)}
   .cat-head .sub{color:var(--muted)}
   .controls{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
   .controls .hint{color:var(--accent2);font-size:13px;font-weight:600}
-  .ex-wrap{display:flex;flex-direction:column;gap:18px}
-  .ex{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:16px;display:grid;grid-template-columns:1fr;gap:16px;box-shadow:var(--sh)}
-  @media(min-width:820px){.ex{grid-template-columns:170px 1fr 290px}}
-  .ex .fig{background:var(--panel2);border:1px solid var(--line);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:10px}
-  .ex .fig .lbl{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.4px}
-  .ex .photo{border-radius:14px;overflow:hidden;aspect-ratio:1/1;background:var(--panel2);position:sticky;top:12px}
-  .ex .photo img{width:100%;height:100%;object-fit:cover;display:block}
-  .ex .body h3{margin:0 0 4px;font-size:19px}
-  .ex .meta{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 10px}
+  .ex-wrap{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:18px}
+  .ex{background:var(--panel);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:var(--sh);display:flex;flex-direction:column}
+  .ex .stage{position:relative;background:
+    radial-gradient(800px 200px at 50% -40%, rgba(82,168,255,.18), transparent 60%),var(--panel2);
+    border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:center;padding:18px;min-height:280px;overflow:hidden}
+  .ex .stage svg{width:230px;height:260px;display:block}
+  .ex .stage .floor{position:absolute;left:8%;right:8%;bottom:26px;height:3px;border-radius:2px;background:linear-gradient(90deg,transparent,#3a4668,#3a4668,transparent)}
+  .ex .stage .name{position:absolute;top:12px;left:14px;font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+  .ex .stage .play{position:absolute;bottom:12px;right:14px;display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--accent);background:rgba(82,168,255,.12);border:1px solid rgba(82,168,255,.4);padding:5px 9px;border-radius:999px;font-weight:700}
+  .ex .stage .play i{width:0;height:0;border-left:8px solid var(--accent);border-top:5px solid transparent;border-bottom:5px solid transparent}
+  .ex .body{padding:16px 18px 18px;display:flex;flex-direction:column;flex:1}
+  .ex .body h3{margin:0 0 8px;font-size:18px;line-height:1.25}
+  .ex .meta{display:flex;gap:7px;flex-wrap:wrap;margin:0 0 10px}
   .meta span{font-size:11.5px;padding:3px 9px;border-radius:999px;background:var(--panel2);border:1px solid var(--line);color:var(--muted)}
-  .ex .desc{color:var(--muted);font-size:14px;margin:0 0 10px}
-  .steps{margin:0 0 10px;padding-left:20px;display:flex;flex-direction:column;gap:5px}
-  .steps li{font-size:14px}
-  .reps{font-weight:700;color:var(--accent2);font-size:14px;margin:0 0 10px}
+  .ex .desc{color:var(--muted);font-size:14px;margin:0 0 12px}
+  .steps{margin:0 0 12px;padding-left:20px;display:flex;flex-direction:column;gap:5px}
+  .steps li{font-size:13.5px}
+  .steps li b{color:var(--accent)}
+  .reps{font-weight:700;color:var(--accent2);font-size:14px;margin:0 0 12px;margin-top:auto}
   .video-row{display:flex;gap:8px;flex-wrap:wrap}
   .last-upd{color:var(--muted);font-size:12.5px}
   footer{color:var(--muted);font-size:13px;text-align:center;margin-top:34px}
   .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(130%);background:var(--accent2);color:#06240c;font-weight:700;padding:12px 20px;border-radius:12px;transition:transform .25s;z-index:50;box-shadow:var(--sh)}
   .toast.show{transform:translateX(-50%) translateY(0)}
-  @media(prefers-reduced-motion:reduce){*{animation:none!important}}
+  @media(max-width:480px){.ex-wrap{grid-template-columns:1fr}.ex .stage svg{width:200px;height:230px}}
+  @media(prefers-reduced-motion:reduce){.fig-tl *,.ex .stage svg *{animation:none!important}}
 </style>
 </head>
 <body>
@@ -82,12 +92,9 @@
 
   <section class="view active" id="view-home">
     <div class="hero">
-      <img src="img/home-hero.jpg" alt="Домашняя тренировочная зона">
-      <div class="ov"></div>
-      <div class="tx">
-        <h1>Тренируйся дома, без зала</h1>
-        <p>Выбери группу мышц — спина, руки или ноги. Анимированные схемы, фото и инструкции покажут, как выполнять упражнение правильно.</p>
-      </div>
+      <h1>Тренируйся дома, без зала</h1>
+      <p>Выбери группу мышц — спина, руки или ноги. Живые анимации покажут каждое движение правильно, пошаговые инструкции научат технике.</p>
+      <span class="pulse"><i></i> Анимации показывают технику в движении</span>
     </div>
     <div class="grid-cards" id="cards"></div>
   </section>
@@ -114,213 +121,217 @@
 <script>
 (function(){
   "use strict";
+  var $=function(s){return document.querySelector(s);};
+  var ICONS={back:"🦴",arms:"💪",legs:"🦵"};
+  var C="#52a8ff",CW="#7fe0a0",L="#3a4668",W=5;
 
-  var ICONS = {back:"🦴", arms:"💪", legs:"🦵"};
+  var C="#52a8ff", W=5;
 
-  var PROGRAMS = {
-    back: {
-      title:"Тренировка спины",
+  function anim(px,py,angr,angR,dur){
+    return '<animateTransform attributeName="transform" type="rotate" '+
+      'values="0 '+px+' '+py+';0 '+px+' '+py+';'+angr+' '+px+' '+py+';'+angR+' '+px+' '+py+';0 '+px+' '+py+'" '+
+      'keyTimes="0;.18;.5;.7;1" dur="'+dur+'" repeatCount="indefinite"/>';
+  }
+  // Whole-figure helpers in stage coordinates (0..240 x 0..270), ground at ~258.
+  function head(cx,cy){return '<circle cx="'+cx+'" cy="'+cy+'" r="10" fill="none" stroke="'+C+'" stroke-width="'+W+'"/>';}
+  function ln(x1,y1,x2,y2){return '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="'+C+'" stroke-width="'+W+'" stroke-linecap="round"/>';}
+
+  function fig(kind){
+    var svg='<svg viewBox="0 0 240 270" width="100%" role="img" aria-label="Живая анимация упражнения" class="fig-tl">';
+    svg+='<rect y="254" width="240" height="16" rx="8" fill="#232c44"/>';
+    var T="3s";
+
+    if(kind==="pullup"){
+      // bar fixed at top; body hangs and rises, arms overhead
+      svg+='<rect x="46" y="44" width="148" height="7" rx="3.5" fill="#46516f"/>';
+      svg+='<g><animateTransform attributeName="transform" type="translate" values="0 0;0 0;0 -76;0 -76;0 0" keyTimes="0;.2;.5;.7;1" dur="'+T+'" repeatCount="indefinite"/>'+
+        '<g transform="translate(120 158)">'+
+          head(0,-16)+ln(0,-6,0,40)+
+          ln(0,6,-18,-18)+ln(-18,-18,-28,-52)+
+          ln(0,6,18,-18)+ln(18,-18,28,-52)+
+          ln(0,40,-8,70)+ln(-8,70,-3,96)+
+          ln(0,40,8,70)+ln(8,70,3,96)+
+        '</g></g>';
+    }
+    else if(kind==="squat"){
+      // upright figure drops; arms extend forward, knees bend
+      svg+='<g transform="translate(120 96)">'+head(0,-30)+ln(0,-20,0,30)+'</g>';
+      svg+='<g class="arms"><animateTransform attributeName="transform" type="rotate" values="0 120 106;0 120 106;-80 120 106;-80 120 106;0 120 106" keyTimes="0;.18;.5;.7;1" dur="'+T+'" repeatCount="indefinite"/>'+
+        ln(120,106,98,132)+ln(98,132,98,144)+
+        ln(120,106,142,132)+ln(142,132,142,144)+'</g>';
+      svg+='<g class="hip"><animateTransform attributeName="transform" type="translate" values="0 0;0 0;0 34;0 34;0 0" keyTimes="0;.18;.5;.7;1" dur="'+T+'" repeatCount="indefinite"/>'+
+        '<g transform="translate(120 136)">'+
+          '<g class="th1">'+anim(-14,-8,-6,26,T)+'<g transform="translate(-12 44)">'+ln(0,0,-6,34)+'</g>'+'<g transform="translate(-14 -8)">'+ln(0,0,-14,-30)+'</g></g>'+
+          '<g class="th2">'+anim(14,-8,6,-26,T)+'<g transform="translate(12 44)">'+ln(0,0,6,34)+'</g>'+'<g transform="translate(14 -8)">'+ln(0,0,14,-30)+'</g></g>'+
+        '</g></g>';
+    }
+    else if(kind==="lunge"){
+      // torso rises/falls lightly, legs alternate forward/back
+      svg+='<g class="torso"><animateTransform attributeName="transform" type="translate" values="0 0;0 0;0 4;0 4;0 0" keyTimes="0;.18;.5;.72;1" dur="'+T+'" repeatCount="indefinite"/>'+
+        '<g transform="translate(120 92)">'+head(0,-30)+ln(0,-20,0,34)+'</g></g>';
+      svg+='<g class="earm1">'+anim(120,76,-20,-20,T)+'<g transform="translate(120 76)">'+ln(0,8,-18,20)+ln(-18,20,-30,8)+'</g></g>'+
+        '<g class="earm2">'+anim(120,76,20,20,T)+'<g transform="translate(120 76)">'+ln(0,8,18,20)+ln(18,20,30,8)+'</g></g>';
+      svg+='<g class="legL2">'+anim(120,130,0,26,T)+'<g transform="translate(120 130)">'+ln(0,0,-16,42)+'<g class="shL">'+anim(-16,42,0,20,T)+'<g transform="translate(-16 42)">'+ln(0,0,-20,38)+'</g></g></g></g>';
+      svg+='<g class="legR2">'+anim(120,130,-32,-6,T)+'<g transform="translate(120 130)">'+ln(0,0,14,40)+'<g class="shR">'+anim(14,40,0,-8,T)+'<g transform="translate(14 40)">'+ln(0,0,12,36)+'</g></g></g></g>';
+    }
+    else if(kind==="curl"){
+      // biceps curl: forearms pivot up at elbows, torso steady
+      svg+='<g transform="translate(120 78)">'+head(-18,-24)+head(18,-24)+''+'</g>';
+      svg+='<g transform="translate(120 96)">'+ln(-18,-20,-18,30)+ln(18,-20,18,30)+'</g>';
+      svg+='<g class="torso2"><animateTransform attributeName="transform" type="rotate" values="0 0 0;0 0 0;0 0 0" dur="1s"/></g>';
+      svg+='<g class="alift">'+anim(-16,40,-90,-90,T)+'<g transform="translate(-16 40)">'+ln(0,0,-12,-28)+'</g></g>';
+      svg+='<g class="aliftR">'+anim(16,40,90,90,T)+'<g transform="translate(16 40)">'+ln(0,0,12,-28)+'</g></g>';
+      svg+='<g transform="translate(120 78)">'+head(0,-26)+ln(0,-16,0,30)+'</g>';
+      svg+='<g transform="translate(120 108)">'+ln(-16,0,-6,34)+ln(16,0,6,34)+'</g>';
+    }
+    else if(kind==="dip"){
+      // triceps dip: body lowers between bent arms
+      svg+='<rect x="52" y="40" width="136" height="7" rx="3.5" fill="#46516f"/>';
+      svg+='<g class="bench"><animateTransform attributeName="transform" type="translate" values="0 0;0 0;0 12;0 12;0 0" keyTimes="0;.18;.5;.7;1" dur="'+T+'" repeatCount="indefinite"/>'+
+        '<g transform="translate(120 70)">'+
+          '<g class="a5">'+anim(-34,0,60,60,T)+'<g transform="translate(-34 0)">'+ln(0,0,-20,34)+'</g></g>'+
+          '<g class="a6">'+anim(34,0,-60,-60,T)+'<g transform="translate(34 0)">'+ln(0,0,20,34)+'</g></g>'+
+          '<g class="abod"><animateTransform attributeName="transform" type="translate" values="0 0;0 0;0 14;0 14;0 0" keyTimes="0;.18;.5;.7;1" dur="'+T+'" repeatCount="indefinite"/>'+
+            head(0,-40)+ln(0,-30,0,16)+ln(0,-12,-14,6)+ln(0,-12,14,6)+
+            ln(0,16,-10,42)+ln(0,16,10,42)+'</g>'+
+        '</g></g>';
+    }
+    else if(kind==="pushup"){
+      // plank: body pivots down/up at feet, arms bend
+      svg+='<g class="plank"><animateTransform attributeName="transform" type="rotate" values="0 40 236;0 40 236;12 40 236;12 40 236;0 40 236" keyTimes="0;.18;.5;.7;1" dur="'+T+'" repeatCount="indefinite"/>'+
+        '<g transform="translate(40 236) rotate(-12)">'+
+          '<g class="palm1">'+anim(18,-26,20,70,T)+'<g transform="translate(18 -26)">'+ln(0,0,-2,14)+'</g>'+'<g transform="translate(18 -26 )">'+ln(0,0,0,14)+'</g></g>'+
+          '<g class="palm2">'+anim(150,-26,-20,-70,T)+'<g transform="translate(150 -26)">'+ln(0,0,-2,14)+'</g>'+'<g transform="translate(150 -26)">'+ln(0,0,0,14)+'</g></g>'+
+          '<g class="pbody">'+head(82,-46)+'<g transform="translate(84 -38)">'+ln(0,0,0,40)+'</g>'+ln(84,-38,150,-26)+'</g>'+
+          '<g transform="translate(40 236)">'+ln(0,0,10,-22)+'</g>'+
+          '<g transform="translate(40 236)">'+ln(0,0,0,18)+'</g>'+
+        '</g></g>';
+    }
+    else if(kind==="glute"){
+      // lying on back, pelvis lifts
+      svg+='<g class="gb"><animateTransform attributeName="transform" type="rotate" values="0 120 96;0 120 96;46 120 96;46 120 96;0 120 96" keyTimes="0;.18;.5;.7;1" dur="'+T+'" repeatCount="indefinite"/>'+
+        '<g transform="translate(120 96)">'+
+          head(0,60)+ln(0,52,0,18)+'</g>'+
+        '<g transform="translate(120 40)">'+ln(0,0,0,10)+'</g>'+
+        '<g class="glegs"><animateTransform attributeName="transform" type="rotate" values="0 120 96;0 120 96;46 120 96;46 120 96;0 120 96" dur="'+T+'"/></g>'+
+        '<g transform="translate(120 96)">'+ln(0,0,-14,56)+ln(-14,56,-22,62)+ln(0,0,14,56)+ln(14,56,22,62)+'</g></g>';
+    }
+    else if(kind==="superm"){
+      // lying prone, arms+legs lift simultaneously, rocking at hips
+      svg+='<g class="sp"><animateTransform attributeName="transform" type="rotate" values="0 120 200;0 120 200;-20 120 200;-20 120 200;0 120 200" keyTimes="0;.18;.5;.7;1" dur="'+T+'" repeatCount="indefinite"/>'+
+        '<g transform="translate(120 200)">'+
+          '<g class="seArm1">'+anim(-40,0,120,200,T)+'<g transform="translate(-40 0)">'+ln(0,0,-40,0)+'</g></g>'+
+          '<g class="seArm2">'+anim(40,0,-120,-200,T)+'<g transform="translate(40 0)">'+ln(0,0,40,0)+'</g></g>'+
+          head(0,-64)+ln(0,-54,0,-12)+
+          '<g class="seLeg1">'+anim(-16,60,0,160,T)+'<g transform="translate(-16 60)">'+ln(0,0,-6,36)+'</g></g>'+
+          '<g class="seLeg2">'+anim(16,60,0,-160,T)+'<g transform="translate(16 60)">'+ln(0,0,6,36)+'</g></g>'+
+        '</g></g>';
+    }
+    else {
+      // good morning / row: torso pivots over straight legs, arms pull
+      svg+='<g class="gm"><animateTransform attributeName="transform" type="rotate" values="0 120 130;0 120 130;55 120 130;55 120 130;0 120 130" keyTimes="0;.18;.5;.7;1" dur="'+T+'" repeatCount="indefinite"/>'+
+        '<g transform="translate(120 130)">'+
+          head(0,-70)+ln(0,-60,0,-10)+
+          '<g class="a7">'+anim(-18,0,-60,80,T)+'<g transform="translate(-18 0)">'+ln(0,0,-20,-48)+'</g></g>'+
+          '<g class="a8">'+anim(18,0,60,-80,T)+'<g transform="translate(18 0)">'+ln(0,0,20,-48)+'</g></g>'+
+          '<g transform="translate(-10 0)">'+ln(0,0,-4,92)+'</g><g transform="translate(10 0)">'+ln(0,0,4,92)+'</g>'+
+        '</g></g>';
+    }
+    svg+='</svg>';
+    return svg;
+  }
+
+  var PROGRAMS={
+    back:{title:"Тренировка спины",
       sub:"Осанка и сила спины в домашних условиях. Турник, гантели, коврик.",
-      hero:"img/back-hero.jpg",
+      anim:"pullup",tags:["Осанка","Турник","Коврик"],
       exercises:[
-        {img:"img/pullup.jpg", name:"Подтягивания на турнике", difficulty:"Средний", muscle:"Широчайшие, бицепс",
-         reps:"4 × 5-8 повторов", desc:"Лучшее базовое упражнение для спины. Нужен домашний турник.", fig:"pullup",
+        {name:"Подтягивания на турнике",difficulty:"Средний",muscle:"Широчайшие, бицепс",reps:"4 × 5-8 повторов",
+         desc:"Лучшее базовое упражнение для спины. Нужен домашний турник.",fig:"pullup",
          steps:["Повисни на турнике широким хватом, ладони от себя.","Сведи лопатки и подтянись, пока подбородок не окажется над перекладиной.","Сделай паузу вверху на секунду.","Медленно опустись до полного выпрямления рук."],
          video:"https://www.youtube.com/results?search_query=подтягивания+техника+дома"},
-        {img:"img/row-dumbbell.jpg", name:"Тяга гантели в наклоне одной рукой", difficulty:"Лёгкий", muscle:"Середина спины, ромбовидные",
-         reps:"3 × 10-12 на сторону", desc:"Прорабатывает спину поочерёдно. Подойдёт гантель или бутылка с водой.", fig:"row",
-         steps:["Опрись коленом и рукой о стул или скамью, спина прямая.","Во второй руке гантель, рука свисает вниз.","Тяни гантель к поясу, сводя лопатку.","Медленно опусти, растягивая мышцу."],
+        {name:"Тяга гантели в наклоне одной рукой",difficulty:"Лёгкий",muscle:"Середина спины, ромбовидные",reps:"3 × 10-12 на сторону",
+         desc:"Прорабатывает спину поочерёдно. Подойдёт гантель или бутылка с водой.",fig:"row",
+         steps:["Опрись коленом и рукой о стул, спина прямая.","Во второй руке гантель, рука свисает вниз.","Тяни гантель к поясу, сводя лопатку.","Медленно опусти, растягивая мышцу."],
          video:"https://www.youtube.com/results?search_query=тяга+гантели+в+наклоне+одной+рукой"},
-        {img:"img/band-row.jpg", name:"Тяга эластичной ленты", difficulty:"Лёгкий", muscle:"Вся спина",
-         reps:"3 × 12-15", desc:"Резиновая лента даёт сопротивление без железа.", fig:"band",
-         steps:["Сядь на пол, ноги выпрямлены, лента за стопами.","Натяни ленту, держа концы в руках.","Сгибай локти, тяни ленту к животу, сводя лопатки.","Медленно верни руки вперёд, контролируя натяжение."],
+        {name:"Тяга эластичной ленты",difficulty:"Лёгкий",muscle:"Вся спина",reps:"3 × 12-15",
+         desc:"Резиновая лента даёт сопротивление без железа.",fig:"row",
+         steps:["Сядь на пол, ноги выпрямлены, лента за стопами.","Натяни ленту, держа концы в руках.","Сгибай локти, тяни ленту к животу, сводя лопатки.","Медленно верни руки вперёд."],
          video:"https://www.youtube.com/results?search_query=тяга+эспандера+к+поясу"},
-        {img:"img/superman.jpg", name:"Супермен", difficulty:"Лёгкий", muscle:"Поясница, ягодицы",
-         reps:"3 × 12-15", desc:"Укрепляет поясницу без инвентаря — достаточно коврика.", fig:"prone",
+        {name:"Супермен",difficulty:"Лёгкий",muscle:"Поясница, ягодицы",reps:"3 × 12-15",
+         desc:"Укрепляет поясницу без инвентаря — достаточно коврика.",fig:"superm",
          steps:["Ляг на живот, руки вытянуты вперёд.","Одновременно оторви руки и ноги от пола.","Задержись на 2 секунды в верхней точке.","Медленно опустись, не расслабляя поясницу."],
-         video:"https://www.youtube.com/results?search_query=супермен+упражнение+техника"},
-        {img:"img/back-bridge.jpg", name:"Обратный мостик (гиперэкстензия)", difficulty:"Средний", muscle:"Разгибатели спины, ягодицы",
-         reps:"3 × 10-12", desc:"Хорошо грузит поясницу и ягодицы в домашних условиях.", fig:"backbend",
+         video:"https://www.youtube.com/results?search_query=супермен+упражнение"},
+        {name:"Обратный мостик (гиперэкстензия)",difficulty:"Средний",muscle:"Разгибатели спины, ягодицы",reps:"3 × 10-12",
+         desc:"Хорошо грузит поясницу и ягодицы в домашних условиях.",fig:"superm",
          steps:["Ляг на живот, руки за голову или вдоль тела.","Подними верхнюю часть тела вверх, прогибаясь в пояснице.","Лопатки сведи назад и вниз.","Плавно вернись в исходное положение."],
          video:"https://www.youtube.com/results?search_query=гиперэкстензия+на+полу"}
-      ]
-    },
-    arms: {
-      title:"Тренировка рук",
+      ]},
+    arms:{title:"Тренировка рук",
       sub:"Бицепс и трицепс дома: гантели, стул, пол.",
-      hero:"img/arms-hero.jpg",
+      anim:"curl",tags:["Бицепс","Трицепс","Гантели"],
       exercises:[
-        {img:"img/biceps-curl.jpg", name:"Сгибания рук с гантелями (бицепс)", difficulty:"Лёгкий", muscle:"Бицепс",
-         reps:"3 × 10-12", desc:"Классика для бицепса. Подойдут гантели или бутылки с водой.", fig:"curl",
+        {name:"Сгибания рук с гантелями (бицепс)",difficulty:"Лёгкий",muscle:"Бицепс",reps:"3 × 10-12",
+         desc:"Классика для бицепса. Подойдут гантели или бутылки с водой.",fig:"curl",
          steps:["Встань, гантели в опущенных руках, ладони от себя.","Локти прижаты к корпусу.","Сгибай руки, поднимая гантели к плечам.","Медленно опускай, полностью выпрямляя руки."],
-         video:"https://www.youtube.com/results?search_query=сгибание+рук+с+гантелями+техника"},
-        {img:"img/hammer-curl.jpg", name:"Молотки (hammer curls)", difficulty:"Лёгкий", muscle:"Бицепс, плечо",
-         reps:"3 × 10-12", desc:"Нейтральный хват прорабатывает бицепс и плечевую мышцу.", fig:"curl",
-         steps:["Гантели в руках, хват нейтральный (ладони друг к другу).","Локти прижаты к корпусу.","Сгибай руки, поднимая гантели.","Ладони весь путь остаются друг к другу."],
-         video:"https://www.youtube.com/results?search_query=молотки+бицепс+техника"},
-        {img:"img/triceps-dip.jpg", name:"Обратные отжимания от стула (трицепс)", difficulty:"Средний", muscle:"Трицепс",
-         reps:"3 × 10-15", desc:"Простое упражнение на трицепс с собственным весом.", fig:"dip",
+         video:"https://www.youtube.com/results?search_query=сгибание+рук+с+гантелями"},
+        {name:"Молотки (hammer curls)",difficulty:"Лёгкий",muscle:"Бицепс, плечо",reps:"3 × 10-12",
+         desc:"Нейтральный хват прорабатывает бицепс и плечевую мышцу.",fig:"curl",
+         steps:["Гантели в руках, хват нейтральный.","Локти прижаты к корпусу.","Сгибай руки, поднимая гантели.","Ладони весь путь остаются друг к другу."],
+         video:"https://www.youtube.com/results?search_query=молотки+бицепс"},
+        {name:"Обратные отжимания от стула (трицепс)",difficulty:"Средний",muscle:"Трицепс",reps:"3 × 10-15",
+         desc:"Простое упражнение на трицепс с собственным весом.",fig:"dip",
          steps:["Сядь на край стула, ладони у бёдер.","Соскользни вперёд, ноги выпрямлены, таз над полом.","Сгибай локти, опуская таз к полу.","Выжми себя вверх, разгибая руки."],
          video:"https://www.youtube.com/results?search_query=обратные+отжимания+от+стула"},
-        {img:"img/knee-pushup.jpg", name:"Отжимания с колен", difficulty:"Лёгкий", muscle:"Грудь, трицепс",
-         reps:"3 × 10-15", desc:"Облегчённый вариант отжиманий для новичков — отличная база.", fig:"push",
-         steps:["Встань на колени, положи ладони на пол шире плеч.","Корпус зафиксируй прямым от колен до головы.","Опустись, сгибая локти, до лёгкого касания грудью пола.","Выжми себя вверх, выпрямляя руки."],
-         video:"https://www.youtube.com/results?search_query=отжимания+с+колен+техника"},
-        {img:"img/diamond-pushup.jpg", name:"Алмазные отжимания (трицепс)", difficulty:"Средний", muscle:"Трицепс, грудь",
-         reps:"3 × 8-12", desc:"Ладони вместе — усиленный акцент на трицепс.", fig:"push",
-         steps:["Соедини ладони под грудью, образуя ромб из пальцев.","Корпус прямой, только носки и ладони на полу.","Опустись, сгибая локти вдоль тела.","Выжми себя вверх, полностью разгибая руки."],
-         video:"https://www.youtube.com/results?search_query=алмазные+отжимания+техника"}
-      ]
-    },
-    legs: {
-      title:"Тренировка ног",
+        {name:"Отжимания с колен",difficulty:"Лёгкий",muscle:"Грудь, трицепс",reps:"3 × 10-15",
+         desc:"Облегчённый вариант отжиманий для новичков — отличная база.",fig:"pushup",
+         steps:["Встань на колени, ладони шире плеч.","Корпус держи прямым от колен до головы.","Опустись, сгибая локти, до лёгкого касания грудью пола.","Выжми себя вверх, выпрямляя руки."],
+         video:"https://www.youtube.com/results?search_query=отжимания+с+колен"},
+        {name:"Алмазные отжимания (трицепс)",difficulty:"Средний",muscle:"Трицепс, грудь",reps:"3 × 8-12",
+         desc:"Ладони вместе — усиленный акцент на трицепс.",fig:"pushup",
+         steps:["Соедини ладони под грудью, образуя ромб.","Корпус прямой, только носки и ладони на полу.","Опустись, сгибая локти вдоль тела.","Выжми себя вверх, полностью разгибая руки."],
+         video:"https://www.youtube.com/results?search_query=алмазные+отжимания"}
+      ]},
+    legs:{title:"Тренировка ног",
       sub:"Ноги и ягодицы дома: приседания, выпады, мостик.",
-      hero:"img/legs-hero.jpg",
+      anim:"squat",tags:["Приседания","Выпады","Ягодицы"],
       exercises:[
-        {img:"img/squat.jpg", name:"Приседания с собственным весом", difficulty:"Лёгкий", muscle:"Квадрицепсы, ягодицы",
-         reps:"4 × 15-20", desc:"Базовое движение, качает весь низ тела без инвентаря.", fig:"squat",
+        {name:"Приседания с собственным весом",difficulty:"Лёгкий",muscle:"Квадрицепсы, ягодицы",reps:"4 × 15-20",
+         desc:"Базовое движение, качает весь низ тела без инвентаря.",fig:"squat",
          steps:["Встань, ноги на ширине плеч, носки чуть врозь.","Согни колени, отводя таз назад, спина прямая.","Опускайся, пока бёдра не станут параллельны полу.","Толкаясь пятками, вернись вверх."],
          video:"https://www.youtube.com/results?search_query=приседания+техника"},
-        {img:"img/lunge.jpg", name:"Выпады вперёд", difficulty:"Средний", muscle:"Квадрицепсы, ягодицы",
-         reps:"3 × 12 на каждую ногу", desc:"Улучшает баланс и симметрично нагружает обе ноги.", fig:"lunge",
+        {name:"Выпады вперёд",difficulty:"Средний",muscle:"Квадрицепсы, ягодицы",reps:"3 × 12 на каждую ногу",
+         desc:"Улучшает баланс и симметрично нагружает обе ноги.",fig:"lunge",
          steps:["Встань прямо, руки на поясе.","Шагни вперёд, опуская заднее колено к полу.","Переднее колено не должно уходить за носок.","Оттолкнись и вернись в исходное положение."],
-         video:"https://www.youtube.com/results?search_query=выпады+вперед+техника"},
-        {img:"img/glute-bridge.jpg", name:"Ягодичный мостик", difficulty:"Лёгкий", muscle:"Ягодицы, подколенные",
-         reps:"3 × 12-15", desc:"Изолирует ягодицы и безопасен для коленей.", fig:"bridger",
-         steps:["Ляг на спину, стопы на полу, колени согнуты.","Сожми ягодицы и подними таз вверх.","Задержись на секунду в верхней точке.","Медленно опусти таз, не расслабляя ягодицы."],
-         video:"https://www.youtube.com/results?search_query=ягодичный+мостик+техника"},
-        {img:"img/calf-raise.jpg", name:"Подъёмы на носки (икры)", difficulty:"Лёгкий", muscle:"Икроножные",
-         reps:"4 × 15-20", desc:"Прокачивает икры. Можно делать на краю ступеньки.", fig:"calf",
+         video:"https://www.youtube.com/results?search_query=выпады+вперед"},
+        {name:"Ягодичный мостик",difficulty:"Лёгкий",muscle:"Ягодицы, подколенные",reps:"3 × 12-15",
+         desc:"Изолирует ягодицы и безопасен для коленей.",fig:"glute",
+         steps:["Ляг на спину, стопы на полу, колени согнуты.","Сожми ягодицы и подними таз вверх.","Задержись на секунду в верхней точке.","Медленно опусти таз."],
+         video:"https://www.youtube.com/results?search_query=ягодичный+мостик"},
+        {name:"Подъёмы на носки (икры)",difficulty:"Лёгкий",muscle:"Икроножные",reps:"4 × 15-20",
+         desc:"Прокачивает икры. Можно делать на краю ступеньки.",fig:"squat",
          steps:["Встань на край ступеньки или на пол.","Поднимись на носки как можно выше.","Задержись на секунду в верхней точке.","Медленно опустись, растягивая икры."],
-         video:"https://www.youtube.com/results?search_query=подъем+на+носки+техника"},
-        {img:"img/side-leg-lift.jpg", name:"Боковой подъём ноги", difficulty:"Лёгкий", muscle:"Ягодицы (средняя)",
-         reps:"3 × 15 на каждую сторону", desc:"Укрепляет среднюю ягодичную мышцу и стабильность таза.", fig:"side",
-         steps:["Ляг на бок, нижнюю ногу согни для опоры.","Верхнюю ногу подними вверх, не наклоняя корпус.","Задержись на секунду в верхней точке.","Медленно опусти ногу, не касаясь второй."],
-         video:"https://www.youtube.com/results?search_query=боковой+подъем+ноги+техника"}
-      ]
-    }
+         video:"https://www.youtube.com/results?search_query=подъем+на+носки"},
+        {name:"Боковой подъём ноги",difficulty:"Лёгкий",muscle:"Ягодицы (средняя)",reps:"3 × 15 на каждую сторону",
+         desc:"Укрепляет среднюю ягодичную мышцу и стабильность таза.",fig:"lunge",
+         steps:["Ляг на бок, нижнюю ногу согни для опоры.","Верхнюю ногу подними вверх, не наклоняя корпус.","Задержись на секунду в верхней точке.","Медленно опусти ногу."],
+         video:"https://www.youtube.com/results?search_query=боковой+подъем+ноги"}
+      ]}
   };
 
-  var order = {back:[0,1,2,3,4], arms:[0,1,2,3,4], legs:[0,1,2,3,4]};
-  var lastUpd = {back:null, arms:null, legs:null};
-  var $ = function(s){ return document.querySelector(s); };
+  var order={back:[0,1,2,3,4],arms:[0,1,2,3,4],legs:[0,1,2,3,4]};
+  var lastUpd={back:null,arms:null,legs:null};
 
-  /* ---------- animated stick figures (SMIL) ---------- */
-  function animSVG(kind){
-    var s = '<svg viewBox="0 0 120 130" width="120" height="130" role="img" aria-label="Анимированная схема упражнения" class="fig-svg">';
-    var C = '#52a8ff', W = 4;
-    if(kind === "pullup"){
-      s += '<line x1="10" y1="14" x2="110" y2="14" stroke="#3a4668" stroke-width="6" stroke-linecap="round"/>'+
-           '<g><animateTransform attributeName="transform" type="translate" values="0 0;0 0;-2 -26;-2 -26;0 0" keyTimes="0;0.2;0.45;0.7;0.95" dur="4s" repeatCount="indefinite"/>'+
-           '<path d="M60 27 L38 16 M60 27 L82 16" stroke="'+C+'" stroke-width="'+W+'" fill="none" stroke-linecap="round"/>'+
-           '<circle cx="60" cy="35" r="8" fill="none" stroke="'+C+'" stroke-width="'+W+'"/>'+
-           '<path d="M60 43 L60 72" stroke="'+C+'" stroke-width="'+W+'" fill="none" stroke-linecap="round"/>'+
-           '<path d="M60 72 L46 92 M60 72 L74 92" stroke="'+C+'" stroke-width="'+W+'" fill="none" stroke-linecap="round"/></g>';
-    } else if(kind === "row" || kind === "band"){
-      // man on all fours-ish / bent over row: torso leans, arm pulls
-      s += '<rect x="0" y="126" width="44" height="4" rx="2" fill="#3a4668"/>'+
-           '<g><animateTransform attributeName="transform" type="rotate" values="0 66 60;0 66 60;-12 66 60;-12 66 60;0 66 60" keyTimes="0;0.2;0.5;0.75;0.95" dur="3.6s" repeatCount="indefinite"/>'+
-           '<circle cx="78" cy="26" r="8" fill="none" stroke="'+C+'" stroke-width="'+W+'"/>'+
-           '<path d="M78 34 L60 52 L50 60 L50 92" stroke="'+C+'" stroke-width="'+W+'" fill="none" stroke-linecap="round"/>'+
-           '<path d="M60 48 L44 32 L38 40 L44 32" stroke="'+C+'" stroke-width="'+W+'" fill="none" stroke-linecap="round"/></g>'+
-           (kind==="band" ? '<path d="M74 70 L88 118" stroke="#7fe0a0" stroke-width="3" stroke-linecap="round" opacity=".8"><animate attributeName="opacity" values=".5;1;.5" dur="1.8s" repeatCount="indefinite"/></path>' : '');
-    } else if(kind === "prone"){
-      // lying face down, arms+legs lift
-      s += '<rect x="0" y="104" width="120" height="4" rx="2" fill="#2a3350"/>'+
-           '<g><animateTransform attributeName="transform" type="rotate" values="0 60 60 ;0 60 60;18 60 60;18 60 60;0 60 60" keyTimes="0;0.2;0.5;0.75;0.95" dur="3.4s" repeatCount="indefinite"/>'+
-           '<circle cx="60" cy="24" r="8" fill="none" stroke="'+C+'" stroke-width="'+W+'"/>'+
-           '<path d="M60 32 L60 88" stroke="'+C+'" stroke-width="'+W+'" fill="none" stroke-linecap="round"/>'+
-           '<path d="M60 40 L40 34 M60 40 L80 34" stroke="'+C+'" stroke-width="'+W+'" fill="none" stroke-linecap="round"/>'+
-           '<path d="M60 88 L44 100 M60 88 L76 100" stroke="'+C+'" stroke-width="'+W+'" fill="none" stroke-linecap="round"/></g>';
-    } else if(kind === "backbend"){
-      s += '<rect x="0" y="120" width="120" height="4" rx="2" fill="#2a3350"/>'+
-           '<g><animateTransform attributeName="transform" type="rotate" values="0 60 96;0 60 96;-16 60 96;-16 60 96;0 60 96" keyTimes="0;0.2;0.5;0.75;0.95" dur="3.4s" repeatCount="indefinite"/>'+
-           '<circle cx="60" cy="84" r="8" fill="none" stroke="'+C+'" stroke-width="'+W+'"/>'+
-           '<path d="M60 92 L60 116" stroke="'+C+'" stroke-width="'+W+'" fill="none" stroke-linecap="round"/>'+
-           '<path d="M60 100 L46 92 M60 100 L74 92" stroke="'+C+'" stroke-width="'+W+'" fill="none" stroke-linecap="round"/></g>';
-    } else if(kind === "curl"){
-      // standing, forearms pivot at elbow
-      s += '<g><animateTransform attributeName="transform" type="rotate" values="0 60 66;0 60 66;14 60 66;14 60 66;0 60 66" keyTimes="0;0.2;0.5;0.75;0.95" dur="3s" repeatCount="indefinite"/>'+
-           '<path d="M42 66 L58 66 M78 66 L62 66" stroke="'+C+'" stroke-width="'+W+'" fill="none" stroke-linecap="round"/></g>'+
-           '<g><animateTransform attributeName="transform" type="rotate" values="0 60 66;0 60 66;12 60 66;12 60 66;0 60 66" keyTimes="0;0.2;0.5;0.75;0.95" dur="3s" repeatCount="indefinite"/>'+
-           '<path d="M60 66 L60 92" stroke="'+C+'" stroke-width="'+W+'" fill="none" stroke-linecap="round"/>'+
-           '<circle cx="60" cy="96" r="4" fill="'+C+'"/></g>'+
-           '<circle cx="60" cy="20" r="8" fill="none" stroke="'+C+'" stroke-width="'+W+'"/>'+
-           '<path d="M60 28 L60 66 M60 48 L46 50 M60 48 L74 50 M60 66 L46 96 M60 66 L74 96" stroke="'+C+'" stroke-width="'+W+'" fill="none" stroke-linecap="round"/>';
-    } else if(kind === "dip" || kind === "push"){
-      s += '<rect x="30" y="12" width="60" height="6" rx="3" fill="#3a4668"/>'+
-           '<g><animateTransform attributeName="transform" type="translate" values="0 0;0 0;0 20;0 20;0 0" keyTimes="0;0.2;0.5;0.75;0.95" dur="3s" repeatCount="indefinite"/>'+
-           '<circle cx="60" cy="34" r="8" fill="none" stroke="'+C+'" stroke-width="'+W+'"/>'+
-           '<path d="M60 42 L60 78" stroke="'+C+'" stroke-width="'+W+'" fill="none" stroke-linecap="round"/>'+
-           '<path d="M60 44 L46 30 M60 44 L74 30" stroke="'+C+'" stroke-width="'+W+'" fill="none" stroke-linecap="round"/>'+
-           '<path d="M60 78 L48 96 M60 78 L72 96" stroke="'+C+'" stroke-width="'+W+'" fill="none" stroke-linecap="round"/></g>';
-    } else if(kind === "squat"){
-      s += '<rect x="0" y="126" width="120" height="4" rx="2" fill="#2a3350"/>'+
-           '<g><animateTransform attributeName="transform" type="translate" values="0 0;0 0;0 22;0 22;0 0" keyTimes="0;0.2;0.5;0.75;0.95" dur="3.2s" repeatCount="indefinite"/>'+
-           '<circle cx="60" cy="22" r="8" fill="none" stroke="'+C+'" stroke-width="'+W+'"/>'+
-           '<path d="M60 30 L60 60" stroke="'+C+'" stroke-width="'+W+'" fill="none" stroke-linecap="round"/>'+
-           '<path d="M60 40 L44 46 M60 40 L76 46" stroke="'+C+'" stroke-width="'+W+'" fill="none" stroke-linecap="round"/>'+
-           '<path d="M60 60 L48 86 M60 60 L72 86" stroke="'+C+'" stroke-width="'+W+'" fill="none" stroke-linecap="round"/></g>';
-    } else if(kind === "lunge"){
-      s += '<rect x="0" y="126" width="120" height="4" rx="2" fill="#2a3350"/>'+
-           '<g><animateTransform attributeName="transform" type="translate" values="0 0;0 0;0 14;-4 14;0 0" keyTimes="0;0.2;0.5;0.75;0.95" dur="3.4s" repeatCount="indefinite"/>'+
-           '<circle cx="62" cy="22" r="8" fill="none" stroke="'+C+'" stroke-width="'+W+'"/>'+
-           '<path d="M62 30 L62 60" stroke="'+C+'" stroke-width="'+W+'" fill="none" stroke-linecap="round"/>'+
-           '<path d="M62 40 L46 46 M62 40 L78 46" stroke="'+C+'" stroke-width="'+W+'" fill="none" stroke-linecap="round"/>'+
-           '<path d="M62 60 L78 84 M62 60 L46 92" stroke="'+C+'" stroke-width="'+W+'" fill="none" stroke-linecap="round"/></g>';
-    } else if(kind === "bridger"){
-      s += '<rect x="0" y="122" width="120" height="4" rx="2" fill="#2a3350"/>'+
-           '<g><animateTransform attributeName="transform" type="rotate" values="0 60 80;0 60 80;-20 60 80;-20 60 80;0 60 80" keyTimes="0;0.2;0.5;0.75;0.95" dur="3.2s" repeatCount="indefinite"/>'+
-           '<circle cx="60" cy="80" r="8" fill="none" stroke="'+C+'" stroke-width="'+W+'"/>'+
-           '<path d="M60 88 L60 118" stroke="'+C+'" stroke-width="'+W+'" fill="none" stroke-linecap="round"/>'+
-           '<path d="M60 60 L44 50 M60 60 L76 50" stroke="'+C+'" stroke-width="'+W+'" fill="none" stroke-linecap="round"/>'+
-           '<path d="M60 88 L48 108 M60 88 L72 108" stroke="'+C+'" stroke-width="'+W+'" fill="none" stroke-linecap="round"/></g>';
-    } else if(kind === "calf"){
-      s += '<rect x="0" y="126" width="120" height="4" rx="2" fill="#2a3350"/>'+
-           '<g><animateTransform attributeName="transform" type="translate" values="0 0;0 0;-3 -14;-3 -14;0 0" keyTimes="0;0.2;0.5;0.75;0.95" dur="2.8s" repeatCount="indefinite"/>'+
-           '<circle cx="60" cy="20" r="8" fill="none" stroke="'+C+'" stroke-width="'+W+'"/>'+
-           '<path d="M60 28 L60 60" stroke="'+C+'" stroke-width="'+W+'" fill="none" stroke-linecap="round"/>'+
-           '<path d="M60 40 L44 46 M60 40 L76 46" stroke="'+C+'" stroke-width="'+W+'" fill="none" stroke-linecap="round"/>'+
-           '<path d="M60 60 L48 86 M60 60 L72 86" stroke="'+C+'" stroke-width="'+W+'" fill="none" stroke-linecap="round"/>'+
-           '<path d="M48 86 L48 96 M72 86 L72 96" stroke="'+C+'" stroke-width="'+W+'" fill="none" stroke-linecap="round"/></g>';
-    } else if(kind === "side"){
-      s += '<rect x="0" y="114" width="120" height="4" rx="2" fill="#2a3350"/>'+
-           '<g><animateTransform attributeName="transform" type="rotate" values="0 60 80;0 60 80;-24 60 80;-24 60 80;0 60 80" keyTimes="0;0.2;0.5;0.75;0.95" dur="3s" repeatCount="indefinite"/>'+
-           '<circle cx="30" cy="30" r="8" fill="none" stroke="'+C+'" stroke-width="'+W+'"/>'+
-           '<path d="M30 38 L60 74 M60 74 L74 82 M74 82 L74 110" stroke="'+C+'" stroke-width="'+W+'" fill="none" stroke-linecap="round"/>'+
-           '<path d="M60 74 L88 74" stroke="'+C+'" stroke-width="'+W+'" fill="none" stroke-linecap="round"/></g>';
-    } else {
-      s += '<circle cx="60" cy="24" r="8" fill="none" stroke="'+C+'" stroke-width="'+W+'"/>'+
-           '<path d="M60 32 L60 72 M60 46 L44 48 M60 46 L76 48 M60 72 L48 96 M60 72 L72 96" stroke="'+C+'" stroke-width="'+W+'" fill="none" stroke-linecap="round"/>';
-    }
-    s += '</svg>';
-    return s;
-  }
-
-  function shuffle(arr){
-    var a = arr.slice();
-    for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}
-    return a;
-  }
-  function refresh(cat){
-    order[cat] = shuffle(order[cat]).slice(0,5);
-    lastUpd[cat] = new Date().toLocaleTimeString("ru-RU",{hour:"2-digit",minute:"2-digit"});
-    renderCat(cat);
-    toast("Программа обновлена ✓");
-  }
-  function toast(msg){
-    var t=$("#toast");t.textContent=msg;t.classList.add("show");
-    clearTimeout(t._tm);t._tm=setTimeout(function(){t.classList.remove("show");},1800);
-  }
+  function shuffle(a){var r=a.slice();for(var i=r.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=r[i];r[i]=r[j];r[j]=t;}return r;}
+  function refresh(cat){order[cat]=shuffle(order[cat]).slice(0,5);lastUpd[cat]=new Date().toLocaleTimeString("ru-RU",{hour:"2-digit",minute:"2-digit"});renderCat(cat);toast("Программа обновлена ✓");}
+  function toast(m){var t=$("#toast");t.textContent=m;t.classList.add("show");clearTimeout(t._tm);t._tm=setTimeout(function(){t.classList.remove("show");},1800);}
 
   function renderHome(){
     var c=$("#cards");c.innerHTML="";
     Object.keys(PROGRAMS).forEach(function(k){
-      var pr=PROGRAMS[k];
-      var a=document.createElement("a");
-      a.className="card";a.href="#"+k;
-      var tags="";pr.exercises.slice(0,3).forEach(function(e){tags+='<span class="tag">'+e.name+'</span>';});
-      a.innerHTML='<img src="'+pr.hero+'" alt="'+pr.title+'">'+
+      var pr=PROGRAMS[k];var a=document.createElement("a");a.className="card";a.href="#"+k;
+      var tags="";pr.tags.forEach(function(t){tags+='<span class="tag">'+t+'</span>';});
+      a.innerHTML='<div class="top">'+fig(pr.anim,1,1)+'</div>'+
         '<div class="b"><h3>'+ICONS[k]+' '+pr.title+'</h3><p>'+pr.exercises.length+' упражнений. '+pr.sub+'</p>'+
         '<div class="tags">'+tags+'</div></div>';
       a.addEventListener("click",function(ev){ev.preventDefault();openCat(k);window.scrollTo(0,0);});
@@ -330,55 +341,35 @@
 
   function renderCat(cat){
     var pr=PROGRAMS[cat];
-    $("#catTitle").textContent=pr.title;
-    $("#catSub").textContent=pr.sub;
+    $("#catTitle").textContent=pr.title;$("#catSub").textContent=pr.sub;
     $("#updLabel").textContent=lastUpd[cat]?"Обновлено в "+lastUpd[cat]:"Показана базовая программа";
-    var list=$("#exList");list.innerHTML="";
-    var idx=0;
+    var list=$("#exList");list.innerHTML="";var idx=0;
     order[cat].forEach(function(ei){
       var e=pr.exercises[ei];
-      var stepsHtml="<ol class='steps'>";e.steps.forEach(function(s2){stepsHtml+="<li>"+s2+"</li>";});stepsHtml+="</ol>";
-      var block=document.createElement("div");
-      block.className="ex";
-      block.innerHTML=
-        '<div class="fig"><span class="lbl">Схема</span>'+animSVG(e.fig)+'</div>'+
+      var stepsHtml="<ol class='steps'>";e.steps.forEach(function(s){stepsHtml+="<li>"+s+"</li>";});stepsHtml+="</ol>";
+      var bl=document.createElement("div");bl.className="ex";
+      bl.innerHTML=
+        '<div class="stage"><div class="floor"></div><span class="name">'+e.difficulty+' · '+e.muscle+'</span>'+
+        fig(e.fig,1,1)+'<span class="play"><i></i>Анимация техники</span></div>'+
         '<div class="body"><h3>'+(idx+1)+'. '+e.name+'</h3>'+
-          '<div class="meta"><span>Сложность: '+e.difficulty+'</span><span>'+e.muscle+'</span></div>'+
-          '<p class="desc">'+e.desc+'</p>'+stepsHtml+
-          '<p class="reps">Подходы × повторения: '+e.reps+'</p>'+
-          '<div class="video-row"><a class="btn vid small" target="_blank" rel="noopener" href="'+e.video+'">▶ Видео: '+e.name+'</a></div></div>'+
-        '<div class="photo"><img src="'+e.img+'" alt="Фото: '+e.name+'"></div>';
-      list.appendChild(block);
-      idx++;
+        '<div class="meta"><span>Сложность: '+e.difficulty+'</span><span>'+e.muscle+'</span></div>'+
+        '<p class="desc">'+e.desc+'</p>'+stepsHtml+
+        '<p class="reps">Подходы × повторения: '+e.reps+'</p>'+
+        '<div class="video-row"><a class="btn vid small" target="_blank" rel="noopener" href="'+e.video+'">▶ Видео: '+e.name+'</a></div></div>';
+      list.appendChild(bl);idx++;
     });
   }
 
   var currentCat=null;
-  function openCat(cat){
-    currentCat=cat;
-    document.querySelectorAll(".view").forEach(function(v){v.classList.remove("active");});
-    $("#view-cat").classList.add("active");
-    renderCat(cat);
-    window.scrollTo(0,0);
-    history.replaceState(null,"","#"+cat);
-  }
-  function goHome(){
-    currentCat=null;
-    document.querySelectorAll(".view").forEach(function(v){v.classList.remove("active");});
-    $("#view-home").classList.add("active");
-    window.scrollTo(0,0);
-    history.replaceState(null,"","#home");
-  }
+  function openCat(cat){currentCat=cat;document.querySelectorAll(".view").forEach(function(v){v.classList.remove("active");});$("#view-cat").classList.add("active");renderCat(cat);window.scrollTo(0,0);history.replaceState(null,"","#"+cat);}
+  function goHome(){currentCat=null;document.querySelectorAll(".view").forEach(function(v){v.classList.remove("active");});$("#view-home").classList.add("active");window.scrollTo(0,0);history.replaceState(null,"","#home");}
 
   $("#homeBtn").addEventListener("click",goHome);
   $("#backBtn").addEventListener("click",goHome);
   $("#refreshBtn").addEventListener("click",function(){if(currentCat)refresh(currentCat);});
 
   renderHome();
-  function fromHash(){
-    var h=location.hash.replace("#","");
-    if(PROGRAMS[h]){openCat(h);}
-  }
+  function fromHash(){var h=location.hash.replace("#","");if(PROGRAMS[h])openCat(h);}
   window.addEventListener("hashchange",fromHash);
   fromHash();
 })();
