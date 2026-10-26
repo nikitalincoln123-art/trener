@@ -1,0 +1,20 @@
+{
+  "status": "OK",
+  "viewports": [
+    {
+      "width": 1440,
+      "height": 900,
+      "actions": 9,
+      "issues": []
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "actions": 9,
+      "issues": []
+    }
+  ],
+  "issues": [],
+  "network": "blocked",
+  "interactions": "scripted assertions only"
+}
