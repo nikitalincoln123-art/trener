@@ -7,83 +7,103 @@
 <meta name="description" content="Помощник по домашним тренировкам для спины, рук и ног: живые анимированные схемы, инструкции и видео.">
 <style>
   :root{
-    --bg:#0e1320;--panel:#161d2e;--panel2:#1c2436;--line:#2a3350;
-    --text:#eaf0fa;--muted:#96a3c0;--accent:#52a8ff;--accent2:#7fe0a0;
-    --red:#ff5353;--sh:0 12px 34px rgba(0,0,0,.38);
+    --bg:#08090c;--panel:#111318;--panel2:#181b22;--line:#2b2f3a;
+    --text:#f2f4f8;--muted:#9aa1ad;--accent:#ffffff;--accent2:#e8ecf3;
+    --red:#ff5a5a;--glow:rgba(255,255,255,.85);--sh:0 12px 34px rgba(0,0,0,.55);
   }
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
   body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;line-height:1.55}
-  .wrap{max-width:1120px;margin:0 auto;padding:20px 18px 70px}
+  /* animated cyber background */
+  .bg-anim{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;background:
+    radial-gradient(900px 500px at 15% -10%, rgba(255,255,255,.10), transparent 55%),
+    radial-gradient(800px 500px at 100% 110%, rgba(255,255,255,.07), transparent 50%),
+    var(--bg)}
+  .bg-anim .grid{position:absolute;inset:-50% -20% -50% -20%;background-image:
+    linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);
+    background-size:52px 52px;transform:perspective(600px) rotateX(55deg);
+    animation:gridMove 14s linear infinite}
+  @keyframes gridMove{from{transform:perspective(600px) rotateX(55deg) translateY(0)}to{transform:perspective(600px) rotateX(55deg) translateY(52px)}}
+  .bg-anim .dot{position:absolute;width:3px;height:3px;border-radius:50%;background:var(--glow);opacity:.0;animation:twinkle var(--t) ease-in-out infinite}
+  @keyframes twinkle{0%,100%{opacity:0;transform:scale(.5)}50%{opacity:.85;transform:scale(1.2)}}
+  .wrap{position:relative;z-index:1;max-width:1120px;margin:0 auto;padding:20px 18px 70px}
   header.top{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;padding-bottom:14px}
   .brand{font-size:22px;font-weight:800;letter-spacing:.5px}
   .brand em{font-style:normal;color:var(--accent2)}
   .brand small{display:block;font-size:11px;color:var(--muted);font-weight:500;letter-spacing:.3px;text-transform:uppercase}
-  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--accent);color:#fff;border:none;border-radius:12px;padding:12px 18px;font-size:15px;font-weight:700;cursor:pointer;transition:filter .15s,transform .08s;text-decoration:none}
-  .btn:hover{filter:brightness(1.1)}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(180deg,#fff,#c9c9d0);color:#08090c;border:none;border-radius:12px;padding:12px 18px;font-size:15px;font-weight:800;cursor:pointer;transition:filter .15s,transform .08s,box-shadow .2s;text-decoration:none;box-shadow:0 0 10px rgba(255,255,255,.25),0 0 26px rgba(255,255,255,.12)}
+  .btn:hover{filter:brightness(1.05);box-shadow:0 0 18px 2px rgba(255,255,255,.55),0 0 40px 6px rgba(255,255,255,.18)}
   .btn:active{transform:translateY(1px)}
-  .btn.ghost{background:var(--panel2);color:var(--text);border:1px solid var(--line)}
-  .btn.ghost:hover{border-color:var(--accent)}
+  .btn.ghost{background:rgba(255,255,255,.06);color:var(--text);border:1px solid rgba(255,255,255,.35);box-shadow:0 0 0 rgba(255,255,255,0)}
+  .btn.ghost:hover{border-color:#fff;box-shadow:0 0 16px 1px rgba(255,255,255,.4);color:#fff}
   .btn.small{padding:9px 13px;font-size:13px;border-radius:10px}
-  .btn.vid{background:var(--red)}
-  .hero{position:relative;border-radius:22px;overflow:hidden;margin-bottom:26px;padding:34px 24px;background:
-    radial-gradient(1200px 300px at 20% -60%, rgba(82,168,255,.25), transparent 60%),
-    radial-gradient(900px 300px at 90% 120%, rgba(127,224,160,.15), transparent 55%),
-    var(--panel);border:1px solid var(--line);box-shadow:var(--sh)}
-  .hero h1{margin:0;font-size:clamp(26px,5.4vw,42px);line-height:1.08;letter-spacing:.3px}
+  .btn.vid{background:linear-gradient(180deg,#fff,#d9d9e0);color:#08090c;box-shadow:0 0 0 rgba(255,255,255,0)}
+  .btn.vid:hover{box-shadow:0 0 18px 2px rgba(255,255,255,.55)}
+  .btn.glow{animation:btnPulse 2.6s ease-in-out infinite}
+  @keyframes btnPulse{0%,100%{box-shadow:0 0 0 rgba(255,255,255,0)}50%{box-shadow:0 0 22px 3px rgba(255,255,255,.5)}}
+  .hero{position:relative;border-radius:22px;overflow:hidden;margin-bottom:26px;padding:34px 24px;background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.02)),var(--panel);border:1px solid rgba(255,255,255,.22);box-shadow:var(--sh)}
+  .hero:after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;background:radial-gradient(600px 200px at 50% -30%,rgba(255,255,255,.16),transparent 60%)}
+  .hero h1{margin:0;font-size:clamp(26px,5.4vw,42px);line-height:1.08;letter-spacing:.3px;text-shadow:0 0 22px rgba(255,255,255,.35)}
   .hero p{margin:12px 0 0;color:var(--muted);font-size:clamp(15px,2.5vw,18px);max-width:640px}
   .hero .pulse{display:inline-flex;align-items:center;gap:8px;color:var(--accent2);font-size:13px;font-weight:700;margin-top:16px}
-  .hero .pulse i{width:10px;height:10px;border-radius:50%;background:var(--accent2);animation:pulse 1.6s infinite}
-  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+  .hero .pulse i{width:10px;height:10px;border-radius:50%;background:#fff;box-shadow:0 0 10px 2px rgba(255,255,255,.8);animation:pulse 1.6s infinite}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.7)}}
   .grid-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
-  .card{position:relative;border-radius:18px;overflow:hidden;cursor:pointer;text-decoration:none;color:inherit;border:1px solid var(--line);box-shadow:var(--sh);transition:transform .12s,border-color .15s;background:var(--panel)}
-  .card:hover{transform:translateY(-4px);border-color:var(--accent)}
-  .card .top{padding:16px 16px 14px;background:var(--panel2);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:center;min-height:190px}
+  .card{position:relative;border-radius:18px;overflow:hidden;cursor:pointer;text-decoration:none;color:inherit;border:1px solid rgba(255,255,255,.18);box-shadow:var(--sh);transition:transform .12s,border-color .15s,box-shadow .2s;background:var(--panel)}
+  .card:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.85);box-shadow:0 0 26px 3px rgba(255,255,255,.22)}
+  .card .top{padding:16px 16px 14px;background:linear-gradient(180deg,rgba(255,255,255,.05),transparent),var(--panel2);border-bottom:1px solid rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;min-height:190px}
   .card .top svg{width:150px;height:170px}
   .card .b{padding:14px 16px 16px}
   .card h3{margin:0 0 4px;font-size:19px}
   .card p{margin:0 0 10px;color:var(--muted);font-size:13.5px}
   .card .tags{display:flex;gap:6px;flex-wrap:wrap}
-  .tag{font-size:11px;padding:4px 9px;border-radius:999px;background:#24314e;color:#bcd0ff;font-weight:600}
+  .tag{font-size:11px;padding:4px 9px;border-radius:999px;background:rgba(255,255,255,.08);color:#e6eaf1;border:1px solid rgba(255,255,255,.16);font-weight:600}
   .view{display:none}
   .view.active{display:block;animation:fade .25s ease}
   @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
   .crumb{display:flex;align-items:center;gap:10px;margin-bottom:6px;flex-wrap:wrap}
   .crumb .btn{padding:8px 12px;font-size:13px}
   .cat-head{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:8px 0 16px}
-  .cat-head h2{margin:0;font-size:clamp(22px,4vw,32px)}
+  .cat-head h2{margin:0;font-size:clamp(22px,4vw,32px);text-shadow:0 0 16px rgba(255,255,255,.25)}
   .cat-head .sub{color:var(--muted)}
   .controls{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
   .controls .hint{color:var(--accent2);font-size:13px;font-weight:600}
   .ex-wrap{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:18px}
-  .ex{background:var(--panel);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:var(--sh);display:flex;flex-direction:column}
-  .ex .stage{position:relative;background:
-    radial-gradient(800px 200px at 50% -40%, rgba(82,168,255,.18), transparent 60%),var(--panel2);
-    border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:center;padding:18px;min-height:280px;overflow:hidden}
+  .ex{background:var(--panel);border:1px solid rgba(255,255,255,.16);border-radius:18px;overflow:hidden;box-shadow:var(--sh);display:flex;flex-direction:column}
+  .ex .stage{position:relative;background:radial-gradient(600px 200px at 50% -30%,rgba(255,255,255,.10),transparent 60%),var(--panel2);border-bottom:1px solid rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;padding:18px;min-height:280px;overflow:hidden}
   .ex .stage svg{width:230px;height:260px;display:block}
-  .ex .stage .floor{position:absolute;left:8%;right:8%;bottom:26px;height:3px;border-radius:2px;background:linear-gradient(90deg,transparent,#3a4668,#3a4668,transparent)}
+  .fig-tl{filter:drop-shadow(0 0 3px rgba(255,255,255,.5)) drop-shadow(0 0 12px rgba(255,255,255,.18))}
+  .card .top .fig-tl{filter:drop-shadow(0 0 2px rgba(255,255,255,.4)) drop-shadow(0 0 8px rgba(255,255,255,.14))}
+  .ex .stage .floor{position:absolute;left:8%;right:8%;bottom:26px;height:3px;border-radius:2px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),rgba(255,255,255,.5),transparent);box-shadow:0 0 10px rgba(255,255,255,.35)}
   .ex .stage .name{position:absolute;top:12px;left:14px;font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px}
-  .ex .stage .play{position:absolute;bottom:12px;right:14px;display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--accent);background:rgba(82,168,255,.12);border:1px solid rgba(82,168,255,.4);padding:5px 9px;border-radius:999px;font-weight:700}
-  .ex .stage .play i{width:0;height:0;border-left:8px solid var(--accent);border-top:5px solid transparent;border-bottom:5px solid transparent}
+  .ex .stage .play{position:absolute;bottom:12px;right:14px;display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:#fff;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.45);padding:5px 9px;border-radius:999px;font-weight:700}
+  .ex .stage .play i{width:0;height:0;border-left:8px solid #fff;border-top:5px solid transparent;border-bottom:5px solid transparent;filter:drop-shadow(0 0 4px #fff)}
   .ex .body{padding:16px 18px 18px;display:flex;flex-direction:column;flex:1}
   .ex .body h3{margin:0 0 8px;font-size:18px;line-height:1.25}
   .ex .meta{display:flex;gap:7px;flex-wrap:wrap;margin:0 0 10px}
-  .meta span{font-size:11.5px;padding:3px 9px;border-radius:999px;background:var(--panel2);border:1px solid var(--line);color:var(--muted)}
+  .meta span{font-size:11.5px;padding:3px 9px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.18);color:var(--muted)}
   .ex .desc{color:var(--muted);font-size:14px;margin:0 0 12px}
   .steps{margin:0 0 12px;padding-left:20px;display:flex;flex-direction:column;gap:5px}
   .steps li{font-size:13.5px}
-  .steps li b{color:var(--accent)}
-  .reps{font-weight:700;color:var(--accent2);font-size:14px;margin:0 0 12px;margin-top:auto}
+  .steps li b{color:#fff}
+  .reps{font-weight:700;color:var(--accent2);font-size:14px;margin:0 0 12px;margin-top:auto;text-shadow:0 0 12px rgba(255,255,255,.3)}
   .video-row{display:flex;gap:8px;flex-wrap:wrap}
   .last-upd{color:var(--muted);font-size:12.5px}
   footer{color:var(--muted);font-size:13px;text-align:center;margin-top:34px}
-  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(130%);background:var(--accent2);color:#06240c;font-weight:700;padding:12px 20px;border-radius:12px;transition:transform .25s;z-index:50;box-shadow:var(--sh)}
+  .early{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.3);color:var(--text);font-size:12.5px;font-weight:700;padding:8px 12px;border-radius:10px;box-shadow:0 0 14px rgba(255,255,255,.12);animation:earlyPulse 3s ease-in-out infinite;max-width:640px;margin:14px auto 0}
+  .early b{color:#fff}
+  @keyframes earlyPulse{0%,100%{box-shadow:0 0 8px rgba(255,255,255,.1)}50%{box-shadow:0 0 22px rgba(255,255,255,.4)}}
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(130%);background:#fff;color:#08090c;font-weight:800;padding:12px 20px;border-radius:12px;transition:transform .25s;z-index:50;box-shadow:0 0 26px rgba(255,255,255,.45)}
   .toast.show{transform:translateX(-50%) translateY(0)}
+  .authorline{margin-top:16px;text-align:center;color:var(--muted);font-size:13px}
+  .authorline b{color:var(--text);font-weight:800;text-shadow:0 0 10px rgba(255,255,255,.4)}
   @media(max-width:480px){.ex-wrap{grid-template-columns:1fr}.ex .stage svg{width:200px;height:230px}}
-  @media(prefers-reduced-motion:reduce){.fig-tl *,.ex .stage svg *{animation:none!important}}
+  @media(prefers-reduced-motion:reduce){.fig-tl *,.ex .stage svg *,.bg-anim *{animation:none!important}}
 </style>
 </head>
 <body>
+<div class="bg-anim"><div class="grid"></div><div class="dots"></div></div>
 <div class="wrap">
   <header class="top">
     <div class="brand">ТРЕ<em>НЕР</em><small>Домашние тренировки</small></div>
@@ -92,6 +112,7 @@
 
   <section class="view active" id="view-home">
     <div class="hero">
+      <span class="early">⚠ <b>Сайт находится в ранней стадии.</b> Возможны ошибки в анимации, неровная анимация, скоро будет исправлена.</span>
       <h1>Тренируйся дома, без зала</h1>
       <p>Выбери группу мышц — спина, руки или ноги. Живые анимации покажут каждое движение правильно, пошаговые инструкции научат технике.</p>
       <span class="pulse"><i></i> Анимации показывают технику в движении</span>
@@ -115,6 +136,7 @@
   </section>
 
   <footer>Инструкции носят ознакомительный характер. При боли прекрати выполнение и посоветуйся с врачом.</footer>
+  <div class="authorline">Автор сайта: <b>Никита Линкольн</b></div>
 </div>
 <div class="toast" id="toast"></div>
 
@@ -123,9 +145,7 @@
   "use strict";
   var $=function(s){return document.querySelector(s);};
   var ICONS={back:"🦴",arms:"💪",legs:"🦵"};
-  var C="#52a8ff",CW="#7fe0a0",L="#3a4668",W=5;
-
-  var C="#52a8ff", W=5;
+  var C="#ffffff",CW="#e8ecf3",L="#4a4f59",W=5;
 
   function anim(px,py,angr,angR,dur){
     return '<animateTransform attributeName="transform" type="rotate" '+
@@ -138,12 +158,12 @@
 
   function fig(kind){
     var svg='<svg viewBox="0 0 240 270" width="100%" role="img" aria-label="Живая анимация упражнения" class="fig-tl">';
-    svg+='<rect y="254" width="240" height="16" rx="8" fill="#232c44"/>';
+    svg+='<rect y="254" width="240" height="16" rx="8" fill="#2b2f3a"/>';
     var T="3s";
 
     if(kind==="pullup"){
       // bar fixed at top; body hangs and rises, arms overhead
-      svg+='<rect x="46" y="44" width="148" height="7" rx="3.5" fill="#46516f"/>';
+      svg+='<rect x="46" y="44" width="148" height="7" rx="3.5" fill="#4a4f59"/>';
       svg+='<g><animateTransform attributeName="transform" type="translate" values="0 0;0 0;0 -76;0 -76;0 0" keyTimes="0;.2;.5;.7;1" dur="'+T+'" repeatCount="indefinite"/>'+
         '<g transform="translate(120 158)">'+
           head(0,-16)+ln(0,-6,0,40)+
@@ -186,7 +206,7 @@
     }
     else if(kind==="dip"){
       // triceps dip: body lowers between bent arms
-      svg+='<rect x="52" y="40" width="136" height="7" rx="3.5" fill="#46516f"/>';
+      svg+='<rect x="52" y="40" width="136" height="7" rx="3.5" fill="#4a4f59"/>';
       svg+='<g class="bench"><animateTransform attributeName="transform" type="translate" values="0 0;0 0;0 12;0 12;0 0" keyTimes="0;.18;.5;.7;1" dur="'+T+'" repeatCount="indefinite"/>'+
         '<g transform="translate(120 70)">'+
           '<g class="a5">'+anim(-34,0,60,60,T)+'<g transform="translate(-34 0)">'+ln(0,0,-20,34)+'</g></g>'+
@@ -372,6 +392,24 @@
   function fromHash(){var h=location.hash.replace("#","");if(PROGRAMS[h])openCat(h);}
   window.addEventListener("hashchange",fromHash);
   fromHash();
+
+  // spawn glowing particles for the animated background
+  (function(){
+    var wrap=document.querySelector(".bg-anim .dots");
+    if(!wrap)return;
+    var n=60;
+    for(var i=0;i<n;i++){
+      var d=document.createElement("i");
+      d.className="dot";
+      var sz=(Math.random()*2+1).toFixed(1);
+      d.style.width=sz+"px";d.style.height=sz+"px";
+      d.style.left=(Math.random()*100)+"%";
+      d.style.top=(Math.random()*100)+"%";
+      d.style.setProperty("--t",(Math.random()*3+2).toFixed(2)+"s");
+      d.style.animationDelay=(Math.random()*4).toFixed(2)+"s";
+      wrap.appendChild(d);
+    }
+  })();
 })();
 </script>
 </body>
