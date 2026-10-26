@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Тренер — помощник по тренировкам</title>
+<meta name="description" content="Помощник по тренировкам для спины, рук и ног: инструкции, схемы выполнения и видео.">
+<style>
+  :root{
+    --bg:#0f1420;
+    --panel:#171e2e;
+    --panel2:#1d2638;
+    --line:#26304a;
+    --text:#e8edf6;
+    --muted:#93a0bd;
+    --accent:#4f8cff;
+    --accent2:#7cd48a;
+    --warn:#ffb454;
+    --red:#ff6b6b;
+    --radius:16px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    line-height:1.55;
+    min-height:100vh;
+  }
+  a{color:var(--accent)}
+  .wrap{max-width:1100px;margin:0 auto;padding:24px 18px 80px}
+  header.top{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:14px;flex-wrap:wrap;padding:8px 0 18px;
+  }
+  .brand{font-size:22px;font-weight:800;letter-spacing:.5px}
+  .brand span{color:var(--accent2)}
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    background:var(--accent);color:#fff;border:none;border-radius:12px;
+    padding:12px 18px;font-size:15px;font-weight:700;cursor:pointer;
+    transition:transform .08s ease, filter .15s ease;
+    text-decoration:none;
+  }
+  .btn:hover{filter:brightness(1.08)}
+  .btn:active{transform:translateY(1px)}
+  .btn.ghost{background:var(--panel2);color:var(--text);border:1px solid var(--line)}
+  .btn.ghost:hover{border-color:var(--accent)}
+  .btn.small{padding:9px 13px;font-size:13px;border-radius:10px}
+  .hero{text-align:center;padding:18px 0 26px}
+  .hero h1{font-size:clamp(26px,5vw,40px);margin:0 0 10px;line-height:1.15}
+  .hero p{color:var(--muted);font-size:clamp(15px,2.5vw,18px);margin:0 auto;max-width:640px}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+  .card{
+    background:linear-gradient(180deg,var(--panel2),var(--panel));
+    border:1px solid var(--line);border-radius:var(--radius);
+    padding:22px;cursor:pointer;text-decoration:none;color:inherit;
+    display:flex;flex-direction:column;gap:12px;
+    transition:transform .12s ease, border-color .15s ease;
+  }
+  .card:hover{transform:translateY(-4px);border-color:var(--accent)}
+  .card .ico{font-size:34px;line-height:1}
+  .card h3{margin:0;font-size:20px}
+  .card p{margin:0;color:var(--muted);font-size:14px}
+  .card .tags{margin-top:auto;display:flex;gap:6px;flex-wrap:wrap}
+  .tag{font-size:11px;padding:4px 9px;border-radius:999px;background:#26314d;color:#bcd0ff;font-weight:600}
+  .view{display:none}
+  .view.active{display:block;animation:fade .2s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .crumb{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap}
+  .crumb .btn{padding:8px 12px;font-size:13px}
+  .cat-head{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:6px 0 18px}
+  .cat-head h2{margin:0;font-size:clamp(22px,4vw,32px)}
+  .cat-head .sub{color:var(--muted)}
+  .ex-wrap{display:flex;flex-direction:column;gap:16px}
+  .ex{
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:18px;display:grid;grid-template-columns:1fr;gap:14px;
+  }
+  @media(min-width:760px){.ex{grid-template-columns:200px 1fr}}
+  .ex .figure{
+    background:var(--panel2);border:1px solid var(--line);border-radius:12px;
+    display:flex;align-items:center;justify-content:center;min-height:150px;
+  }
+  .ex .figure svg{max-width:100%;height:auto}
+  .ex .body h3{margin:0 0 4px;font-size:19px}
+  .ex .meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+  .meta span{font-size:11.5px;padding:3px 9px;border-radius:999px;background:var(--panel2);border:1px solid var(--line);color:var(--muted)}
+  .ex .desc{color:var(--muted);font-size:14px;margin:0 0 10px}
+  .steps{margin:0 0 12px;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+  .steps li{font-size:14px}
+  .reps{font-weight:700;color:var(--accent2);font-size:14px;margin-bottom:12px}
+  .video-row{display:flex;gap:10px;flex-wrap:wrap}
+  .btn.vid{background:#ff4e4e}
+  .btn.vid:hover{filter:brightness(1.08)}
+  .controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
+  .controls .hint{color:var(--accent2);font-size:13px;font-weight:700}
+  .last-upd{color:var(--muted);font-size:12.5px}
+  footer{color:var(--muted);font-size:13px;text-align:center;margin-top:34px}
+  .toast{
+    position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(120%);
+    background:var(--accent2);color:#06240c;font-weight:700;padding:12px 20px;border-radius:12px;
+    transition:transform .25s ease;z-index:50;box-shadow:0 8px 24px rgba(0,0,0,.4);
+  }
+  .toast.show{transform:translateX(-50%) translateY(0)}
+  a.btn.vid{text-decoration:none}
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none!important;transition:none!important}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">ТРЕ<span>НЕР</span></div>
+    <button class="btn ghost small" id="homeBtn" type="button">На главную</button>
+  </header>
+
+  <!-- === HOME === -->
+  <section class="view active" id="view-home">
+    <div class="hero">
+      <h1>Помощник по тренировкам</h1>
+      <p>Выбери группу мышц — спина, руки или ноги. Получи понятные упражнения со схемами, инструкциями и видео.</p>
+    </div>
+    <div class="cards" id="cards"></div>
+  </section>
+
+  <!-- === CATEGORY === -->
+  <section class="view" id="view-cat">
+    <nav class="crumb">
+      <button class="btn ghost small" id="backBtn" type="button">← На главную</button>
+      <span class="last-upd" id="updLabel"></span>
+    </nav>
+    <div class="cat-head">
+      <div>
+        <h2 id="catTitle"></h2>
+        <div class="sub" id="catSub"></div>
+      </div>
+    </div>
+    <div class="controls">
+      <button class="btn small" id="refreshBtn" type="button">🔄 Обновить программу</button>
+      <span class="hint">Поменяет упражнения в этой группе.</span>
+    </div>
+    <div class="ex-wrap" id="exList"></div>
+  </section>
+
+  <footer>Инструкции носят ознакомительный характер. При болях — прекрати выполнение и проконсультируйся с врачом.</footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  var ICONS = {back:"🦴", arms:"💪", legs:"🦵"};
+
+  var PROGRAMS = {
+    back: {
+      title:"Тренировка спины",
+      sub:"Сила, осанка и здоровый позвоночник. 5 упражнений.",
+      exercises:[
+        {
+          name:"Подтягивания",
+          difficulty:"Средний",
+          muscle:"Широчайшие мышцы, бицепс",
+          reps:"4 × 6-10 (в широком хвате)",
+          desc:"Базовое упражнение на всю спину и осанку.",
+          steps:["Встань под турник, возьмись широким хватом, ладони от себя.","Свесься на вытянутых руках, лопатки вверх.","Плавно подтянись, пока подбородок не окажется над перекладиной.","Делай паузу вверху на секунду, затем медленно опустись полностью."],
+          video:"https://www.youtube.com/results?search_query=подтягивания+техника+выполнения"
+        },
+        {
+          name:"Тяга гантели в наклоне",
+          difficulty:"Средний",
+          muscle:"Широчайшие, ромбовидные",
+          reps:"3 × 10-12 на каждую сторону",
+          desc:"Хорошо прорабатывает середину и низ спины поочерёдно.",
+          steps:["Одной рукой и коленом опрись на скамью, спина прямая.","Во второй руке гантель, рука свисает вниз.","Тяни гантель к поясу, сводя лопатки.","Медленно опусти, растягивая мышцу."],
+          video:"https://www.youtube.com/results?search_query=тяга+гантели+в+наклоне+одной+рукой"
+        },
+        {
+          name:"Тяга верхнего блока к груди",
+          difficulty:"Лёгкий",
+          muscle:"Широчайшие мышцы",
+          reps:"3 × 10-12",
+          desc:"Тренажёрный аналог подтягиваний — отлично подходит новичкам.",
+          steps:["Сядь в тренажёр, закрепи бёдра под валиками.","Возьмись за рукоять широким хватом.","Тяни рукоять к верхней части груди, сводя лопатки.","Плавно вернись вверх, чувствуя растяжение."],
+          video:"https://www.youtube.com/results?search_query=тяга+верхнего+блока+к+груди"
+        },
+        {
+          name:"Супермен (гиперэкстензия на полу)",
+          difficulty:"Лёгкий",
+          muscle:"Разгибатели спины, ягодицы",
+          reps:"3 × 12-15",
+          desc:"Укрепляет поясницу без инвентаря.",
+          steps:["Ляг на живот, руки вытянуты вперёд.","Одновременно подними руки и ноги от пола.","Задержи на 2 секунды в верхней точке.","Медленно опустись, не расслабляя поясницу."],
+          video:"https://www.youtube.com/results?search_query=супермен+упражнение+техника"
+        },
+        {
+          name:"Гребля на тренажёре (rowing)",
+          difficulty:"Средний",
+          muscle:"Вся спина, кор",
+          reps:"4 × 8-10",
+          desc:"Комплексная тяга, отлично нагружает спину и низ тела.",
+          steps:["Сядь на сиденье, согни ноги, возьмись за ручки.","Оттолкнись ногами, затем подключи корпус и руки.","У рукояти к груди сведи лопатки.","Вернись в исходное, растянув руки вперёд."],
+          video:"https://www.youtube.com/results?search_query=гребля+на+тренажере+техника"
+        }
+      ]
+    },
+    arms: {
+      title:"Тренировка рук",
+      sub:"Бицепс, трицепс и предплечья. 5 упражнений.",
+      exercises:[
+        {
+          name:"Сгибания рук с гантелями (бицепс)",
+          difficulty:"Лёгкий",
+          muscle:"Бицепс, предплечья",
+          reps:"3 × 10-12",
+          desc:"Классика для прокачки бицепса.",
+          steps:["Встань прямо, гантели в опущенных руках.","Локти прижаты к корпусу, ладони от себя.","Сгибай руки, поднимая гантели к плечам.","Медленно опускай, полностью выпрямляя руки."],
+          video:"https://www.youtube.com/results?search_query=сгибание+рук+с+гантелями+техника"
+        },
+        {
+          name:"Французский жим (трицепс)",
+          difficulty:"Средний",
+          muscle:"Трицепс",
+          reps:"3 × 10-12",
+          desc:"Изолирует трицепс, не трогая другие мышцы.",
+          steps:["Ляг на скамью, возьми штангу/EZ-гриф узким хватом.","Выжми гриф вверх над грудью.","Сгибай руки в локтях, опуская гриф к голове.","Разгибай локти обратно до полного выпрямления."],
+          video:"https://www.youtube.com/results?search_query=французский+жим+лежа+техника"
+        },
+        {
+          name:"Отжимания от скамьи (трицепс)",
+          difficulty:"Средний",
+          muscle:"Трицепс, грудь",
+          reps:"3 × 12-15",
+          desc:"Простое упражнение с собственным весом на трицепс.",
+          steps:["Сядь на край скамьи, ладони у бёдер.","Соскользни вперёд, ноги вытянуты, таз над полом.","Сгибай локти, опуская таз к полу.","Выжми тело вверх, разгибая руки."],
+          video:"https://www.youtube.com/results?search_query=отжимания+от+скамьи+трицепс"
+        },
+        {
+          name:"Молотки (hammer curls)",
+          difficulty:"Лёгкий",
+          muscle:"Бицепс, плечо",
+          reps:"3 × 10-12",
+          desc:"Прорабатывает бицепс и плечевую мышцу.",
+          steps:["Стоя, гантели в руках, хват нейтральный (ладони друг к другу).","Локти прижаты к корпусу.","Сгибай руки, поднимая гантели.","В верхней точке ладони остаются друг к другу.","Опусти медленно."],
+          video:"https://www.youtube.com/results?search_query=молотки+бицепс+техника"
+        },
+        {
+          name:"Разгибание рук на блоке (трицепс)",
+          difficulty:"Лёгкий",
+          muscle:"Трицепс",
+          reps:"3 × 12-15",
+          desc:"Изолирующее упражнение на трицепс в тренажёре.",
+          steps:["Встань лицом к блоку, возьмись за канат.","Локти прижаты к корпусу.","Разгибай руки вниз, сводя концы каната.","В нижней точке сделай паузу.","Медленно вернись вверх."],
+          video:"https://www.youtube.com/results?search_query=разгибание+рук+на+блоке"
+        }
+      ]
+    },
+    legs: {
+      title:"Тренировка ног",
+      sub:"Квадрицепсы, ягодицы, бедро. 5 упражнений.",
+      exercises:[
+        {
+          name:"Приседания с собственным весом",
+          difficulty:"Лёгкий",
+          muscle:"Квадрицепсы, ягодицы",
+          reps:"4 × 15-20",
+          desc:"Базовое движение, укрепляет весь низ тела.",
+          steps:["Встань прямо, ноги на ширине плеч, носки чуть врозь.","Согни колени, отводя таз назад, спина прямая.","Опускайся до параллели бёдер с полом.","Встань, толкаясь пятками."],
+          video:"https://www.youtube.com/results?search_query=приседания+техника+правильная"
+        },
+        {
+          name:"Выпады",
+          difficulty:"Средний",
+          muscle:"Квадрицепс, ягодицы",
+          reps:"3 × 12 на каждую ногу",
+          desc:"Улучшает баланс и симметрично нагружает обе ноги.",
+          steps:["Встань прямо, руки на поясе или вдоль тела.","Шагни вперёд, опуская заднее колено к полу.","Следи, чтобы переднее колено не уходило за носок.","Оттолкнись и вернись в исходное."],
+          video:"https://www.youtube.com/results?search_query=выпады+техника+выполнения"
+        },
+        {
+          name:"Ягодичный мостик",
+          difficulty:"Лёгкий",
+          muscle:"Ягодицы, подколенные",
+          reps:"3 × 12-15",
+          desc:"Изолирует ягодицы и поясницу, безопасно для коленей.",
+          steps:["Ляг на спину, стопы на полу, колени согнуты.","Сожми ягодицы и подними таз вверх.","Задержи на секунду в верхней точке.","Медленно опусти таз."],
+          video:"https://www.youtube.com/results?search_query=ягодичный+мостик+техника"
+        },
+        {
+          name:"Подъёмы на носки (икры)",
+          difficulty:"Лёгкий",
+          muscle:"Икроножные мышцы",
+          reps:"4 × 15-20",
+          desc:"Прокачивает икры, можно делать на ступеньке.",
+          steps:["Встань на край ступеньки или пола.","Поднимись на носки как можно выше.","Задержи на секунду.","Медленно опустись, растягивая икры."],
+          video:"https://www.youtube.com/results?search_query=подъем+на+носки+икры+техника"
+        },
+        {
+          name:"Болгарские сплит-приседания",
+          difficulty:"Сложный",
+          muscle:"Квадрицепс, ягодицы",
+          reps:"3 × 8-10 на каждую ногу",
+          desc:"Односторонне нагружает ногу, требует баланса и силы.",
+          steps:["Встань спиной к скамье, положи заднюю стопу на неё.","Передняя нога впереди, корпус слегка наклонён.","Опускайся, сгибая переднее колено.","Позади стоймя, ведущая нога держит вес.","Оттолкнись и встань."],
+          video:"https://www.youtube.com/results?search_query=болгарские+сплит+приседания+техника"
+        }
+      ]
+    }
+  };
+
+  var order = {back:[0,1,2,3,4], arms:[0,1,2,3,4], legs:[0,1,2,3,4]};
+  var lastUpd = {back:null, arms:null, legs:null};
+
+  var $ = function(s){ return document.querySelector(s); };
+
+  function shuffle(arr){
+    var a = arr.slice();
+    for(var i=a.length-1;i>0;i--){
+      var j = Math.floor(Math.random()*(i+1));
+      var t=a[i]; a[i]=a[j]; a[j]=t;
+    }
+    return a;
+  }
+
+  function refresh(cat){
+    var n = PROGRAMS[cat].exercises.length;
+    order[cat] = shuffle(order[cat]).slice(0,5);
+    lastUpd[cat] = new Date().toLocaleTimeString("ru-RU",{hour:"2-digit",minute:"2-digit"});
+    renderCat(cat);
+    toast("Программа обновлена ✔");
+  }
+
+  function toast(msg){
+    var t = $("#toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(t._tm);
+    t._tm = setTimeout(function(){ t.classList.remove("show"); }, 1800);
+  }
+
+  function renderHome(){
+    var c = $("#cards");
+    c.innerHTML = "";
+    Object.keys(PROGRAMS).forEach(function(k){
+      var pr = PROGRAMS[k];
+      var card = document.createElement("a");
+      card.className = "card";
+      card.href = "#" + k;
+      var tags = "";
+      pr.exercises.slice(0,3).forEach(function(e){ tags += '<span class="tag">'+e.name+'</span>'; });
+      card.innerHTML =
+        '<div class="ico">'+ICONS[k]+'</div>' +
+        '<h3>'+pr.title+'</h3>' +
+        '<p>'+pr.exercises.length+' упражнений. '+pr.sub+'</p>' +
+        '<div class="tags">'+tags+'</div>';
+      card.addEventListener("click", function(ev){ ev.preventDefault(); openCat(k); window.scrollTo(0,0); });
+      c.appendChild(card);
+    });
+  }
+
+  function svgFigure(cat, idx){
+    // Схематичная фигура: разные позы для разных групп/номеров
+    var poses = {
+      back:[0,1,2,3,4],
+      arms:[0,1,2,3,4],
+      legs:[0,1,2,3,4]
+    };
+    var p = poses[cat][idx % poses[cat].length];
+    var head = '<circle cx="100" cy="26" r="13" fill="none" stroke="#8fb0ff" stroke-width="4"/>';
+    var body = "";
+    // позы: стоит прямо, наклон, руки вверх/согнуты, ноги шире
+    if(p===0){
+      body = '<path d="M100 39 L100 95 M84 58 L116 58 M100 95 L88 128 M100 95 L112 128" stroke="#8fb0ff" stroke-width="4" stroke-linecap="round" fill="none"/>';
+    } else if(p===1){
+      body = '<path d="M100 40 L100 80 M100 80 L88 128 M100 80 L112 128 M84 55 L116 45" stroke="#8fb0ff" stroke-width="4" stroke-linecap="round" fill="none"/>';
+    } else if(p===2){
+      body = '<path d="M100 39 L100 95 M84 58 L116 58 M86 52 L78 74 M114 52 L122 74 M100 95 L88 128 M100 95 L112 128" stroke="#8fb0ff" stroke-width="4" stroke-linecap="round" fill="none"/>';
+    } else if(p===3){
+      body = '<path d="M100 39 L100 80 M84 100 L96 120 M116 100 L104 120 M84 80 L70 96 M116 80 L130 96" stroke="#8fb0ff" stroke-width="4" stroke-linecap="round" fill="none"/>';
+    } else {
+      body = '<path d="M100 39 L100 78 M94 60 L60 70 M106 60 L140 70 M100 78 L84 122 M100 78 L116 122" stroke="#8fb0ff" stroke-width="4" stroke-linecap="round" fill="none"/>';
+    }
+    return '<svg viewBox="0 0 200 150" width="170" height="128" role="img" aria-label="Схема упражнения">'+head+body+'</svg>';
+  }
+
+  function renderCat(cat){
+    var pr = PROGRAMS[cat];
+    $("#catTitle").textContent = pr.title;
+    $("#catSub").textContent = pr.sub;
+    $("#updLabel").textContent = lastUpd[cat] ? "Обновлено в "+lastUpd[cat] : "Показана базовая программа";
+    var list = $("#exList");
+    list.innerHTML = "";
+    var idx = 0;
+    order[cat].forEach(function(ei){
+      var e = pr.exercises[ei];
+      var stepsHtml = "<ol class='steps'>";
+      e.steps.forEach(function(s){ stepsHtml += "<li>"+s+"</li>"; });
+      stepsHtml += "</ol>";
+      var block = document.createElement("div");
+      block.className = "ex";
+      block.innerHTML =
+        '<div class="figure">'+svgFigure(cat, idx)+'</div>' +
+        '<div class="body">' +
+          '<h3>'+(idx+1)+'. '+e.name+'</h3>' +
+          '<div class="meta"><span>Сложность: '+e.difficulty+'</span><span>'+e.muscle+'</span></div>' +
+          '<p class="desc">'+e.desc+'</p>' +
+          stepsHtml +
+          '<p class="reps">Подходы × повторения: '+e.reps+'</p>' +
+          '<div class="video-row"><a class="btn vid small" target="_blank" rel="noopener"'+
+          ' href="'+e.video+'">▶ Видео: '+e.name+'</a></div>' +
+        '</div>';
+      list.appendChild(block);
+      idx++;
+    });
+  }
+
+  function openCat(cat){
+    currentCat = cat;
+    document.querySelectorAll(".view").forEach(function(v){ v.classList.remove("active"); });
+    $("#view-cat").classList.add("active");
+    renderCat(cat);
+    window.scrollTo(0,0);
+    history.replaceState(null,"","#"+cat);
+  }
+
+  function goHome(){
+    document.querySelectorAll(".view").forEach(function(v){ v.classList.remove("active"); });
+    $("#view-home").classList.add("active");
+    window.scrollTo(0,0);
+    history.replaceState(null,"","#home");
+  }
+
+  $("#homeBtn").addEventListener("click", goHome);
+  $("#backBtn").addEventListener("click", goHome);
+  $("#refreshBtn").addEventListener("click", function(){
+    refresh(currentCat);
+  });
+
+  var currentCat = null;
+  var origRefresh = refresh;
+  window.__refreshInternal = function(cat){ refresh(cat); };
+
+  renderHome();
+
+  // открыть категорию по хэшу
+  function fromHash(){
+    var h = location.hash.replace("#","");
+    if(PROGRAMS[h]){ currentCat = h; openCat(h); }
+  }
+  window.addEventListener("hashchange", fromHash);
+  fromHash();
+})();
+</script>
+</body>
+</html>
