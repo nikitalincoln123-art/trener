@@ -147,115 +147,123 @@
   var ICONS={back:"🦴",arms:"💪",legs:"🦵"};
   var C="#ffffff",CW="#e8ecf3",L="#4a4f59",W=5;
 
-  function anim(px,py,angr,angR,dur){
-    return '<animateTransform attributeName="transform" type="rotate" '+
-      'values="0 '+px+' '+py+';0 '+px+' '+py+';'+angr+' '+px+' '+py+';'+angR+' '+px+' '+py+';0 '+px+' '+py+'" '+
-      'keyTimes="0;.18;.5;.7;1" dur="'+dur+'" repeatCount="indefinite"/>';
+  // ---- forward-kinematics rig ---------------------------------------------
+  // Each bone is drawn in its joint's LOCAL frame and nested <g> composes the
+  // transforms: rotating a joint around its own origin drags every child with
+  // it, so limbs always stay attached. Head-up = -y.
+  var W=5;
+  function LIN(x1,y1,x2,y2){return '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="#fff" stroke-width="'+W+'" stroke-linecap="round"/>';}
+  function HEAD(cx,cy){return '<circle cx="'+cx+'" cy="'+cy+'" r="11" fill="none" stroke="#fff" stroke-width="'+W+'"/>';}
+  var _KT="0;.2;.5;.75;1";
+  var _SP=".5 0 .5 1;.5 0 .5 1;.5 0 .5 1;.5 0 .5 1";
+  // angles = 5 values for the full cycle (start / rise / top / hold / back)
+  function RA(angles,dur){return 'values="'+angles.join(';')+'" keyTimes="'+_KT+'" calcMode="spline" keySplines="'+_SP+'" dur="'+dur+'" repeatCount="indefinite"';}
+  function J(jx,jy,angles,dur,inner){
+    return '<g transform="translate('+jx+' '+jy+')"><g><animateTransform attributeName="transform" type="rotate" '+RA(angles,dur)+'/>'+inner+'</g></g>';
   }
-  // Whole-figure helpers in stage coordinates (0..240 x 0..270), ground at ~258.
-  function head(cx,cy){return '<circle cx="'+cx+'" cy="'+cy+'" r="10" fill="none" stroke="'+C+'" stroke-width="'+W+'"/>';}
-  function ln(x1,y1,x2,y2){return '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="'+C+'" stroke-width="'+W+'" stroke-linecap="round"/>';}
+  function TY(a1,a2,dur,inner){
+    return '<g><animateTransform attributeName="transform" type="translate" values="0 0;0 '+a1+';0 '+a1+';0 '+a2+';0 0" keyTimes="'+_KT+'" calcMode="spline" keySplines="'+_SP+'" dur="'+dur+'" repeatCount="indefinite"/>'+inner+'</g>';
+  }
+  var Z=[0,0,0,0];
+
+  // Front-view standing figure, hips at local (0,0). cfg: per-joint 4-angle cycles.
+  function biped(cfg,dur){
+    var z=[0,0,0,0];
+    var sh=cfg.sh||z, el=cfg.el||z, to=cfg.to||z;
+    var hL=cfg.hL||z,kL=cfg.kL||z,hR=cfg.hR||z,kR=cfg.kR||z;
+    var arms =
+      J(-9,-40,sh,dur, LIN(0,0,0,26)+J(0,26,el,dur,LIN(0,0,0,28)))+
+      J(9,-40,sh,dur, LIN(0,0,0,26)+J(0,26,el,dur,LIN(0,0,0,28)));
+    var torso = J(0,0,to,dur, LIN(0,0,0,-46)+HEAD(0,-60)+arms);
+    var legL = J(-7,0,hL,dur, LIN(0,0,0,40)+J(0,40,kL,dur,LIN(0,0,0,44)));
+    var legR = J(7,0,hR,dur, LIN(0,0,0,40)+J(0,40,kR,dur,LIN(0,0,0,44)));
+    return torso+legL+legR;
+  }
 
   function fig(kind){
     var svg='<svg viewBox="0 0 240 270" width="100%" role="img" aria-label="Живая анимация упражнения" class="fig-tl">';
-    svg+='<rect y="254" width="240" height="16" rx="8" fill="#2b2f3a"/>';
-    var T="3s";
+    svg+='<rect y="252" width="240" height="16" rx="8" fill="#2b2f3a"/>';
 
-    if(kind==="pullup"){
-      // bar fixed at top; body hangs and rises, arms overhead
-      svg+='<rect x="46" y="44" width="148" height="7" rx="3.5" fill="#4a4f59"/>';
-      svg+='<g><animateTransform attributeName="transform" type="translate" values="0 0;0 0;0 -76;0 -76;0 0" keyTimes="0;.2;.5;.7;1" dur="'+T+'" repeatCount="indefinite"/>'+
-        '<g transform="translate(120 158)">'+
-          head(0,-16)+ln(0,-6,0,40)+
-          ln(0,6,-18,-18)+ln(-18,-18,-28,-52)+
-          ln(0,6,18,-18)+ln(18,-18,28,-52)+
-          ln(0,40,-8,70)+ln(-8,70,-3,96)+
-          ln(0,40,8,70)+ln(8,70,3,96)+
-        '</g></g>';
-    }
-    else if(kind==="squat"){
-      // upright figure drops; arms extend forward, knees bend
-      svg+='<g transform="translate(120 96)">'+head(0,-30)+ln(0,-20,0,30)+'</g>';
-      svg+='<g class="arms"><animateTransform attributeName="transform" type="rotate" values="0 120 106;0 120 106;-80 120 106;-80 120 106;0 120 106" keyTimes="0;.18;.5;.7;1" dur="'+T+'" repeatCount="indefinite"/>'+
-        ln(120,106,98,132)+ln(98,132,98,144)+
-        ln(120,106,142,132)+ln(142,132,142,144)+'</g>';
-      svg+='<g class="hip"><animateTransform attributeName="transform" type="translate" values="0 0;0 0;0 34;0 34;0 0" keyTimes="0;.18;.5;.7;1" dur="'+T+'" repeatCount="indefinite"/>'+
-        '<g transform="translate(120 136)">'+
-          '<g class="th1">'+anim(-14,-8,-6,26,T)+'<g transform="translate(-12 44)">'+ln(0,0,-6,34)+'</g>'+'<g transform="translate(-14 -8)">'+ln(0,0,-14,-30)+'</g></g>'+
-          '<g class="th2">'+anim(14,-8,6,-26,T)+'<g transform="translate(12 44)">'+ln(0,0,6,34)+'</g>'+'<g transform="translate(14 -8)">'+ln(0,0,14,-30)+'</g></g>'+
-        '</g></g>';
+    if(kind==="squat"){
+      var T="3.2s";
+      var figr=biped({to:[0,16,16,0], sh:[0,-70,-70,0], el:[0,-14,-14,0],
+        hL:[0,44,44,0], kL:[0,60,60,0], hR:[0,44,44,0], kR:[0,60,60,0]},T);
+      svg+=TY(34,34,T,'<g transform="translate(120 128)">'+figr+'</g>');
     }
     else if(kind==="lunge"){
-      // torso rises/falls lightly, legs alternate forward/back
-      svg+='<g class="torso"><animateTransform attributeName="transform" type="translate" values="0 0;0 0;0 4;0 4;0 0" keyTimes="0;.18;.5;.72;1" dur="'+T+'" repeatCount="indefinite"/>'+
-        '<g transform="translate(120 92)">'+head(0,-30)+ln(0,-20,0,34)+'</g></g>';
-      svg+='<g class="earm1">'+anim(120,76,-20,-20,T)+'<g transform="translate(120 76)">'+ln(0,8,-18,20)+ln(-18,20,-30,8)+'</g></g>'+
-        '<g class="earm2">'+anim(120,76,20,20,T)+'<g transform="translate(120 76)">'+ln(0,8,18,20)+ln(18,20,30,8)+'</g></g>';
-      svg+='<g class="legL2">'+anim(120,130,0,26,T)+'<g transform="translate(120 130)">'+ln(0,0,-16,42)+'<g class="shL">'+anim(-16,42,0,20,T)+'<g transform="translate(-16 42)">'+ln(0,0,-20,38)+'</g></g></g></g>';
-      svg+='<g class="legR2">'+anim(120,130,-32,-6,T)+'<g transform="translate(120 130)">'+ln(0,0,14,40)+'<g class="shR">'+anim(14,40,0,-8,T)+'<g transform="translate(14 40)">'+ln(0,0,12,36)+'</g></g></g></g>';
+      var T="3.2s";
+      var figr=biped({to:[0,10,10,0],
+        hL:[0,-34,-34,0], kL:[0,-50,-50,0],   // back leg
+        hR:[0,46,46,0],   kR:[0,40,40,0]},T); // front leg
+      svg+='<g transform="translate(120 124)">'+figr+'</g>';
     }
     else if(kind==="curl"){
-      // biceps curl: forearms pivot up at elbows, torso steady
-      svg+='<g transform="translate(120 78)">'+head(-18,-24)+head(18,-24)+''+'</g>';
-      svg+='<g transform="translate(120 96)">'+ln(-18,-20,-18,30)+ln(18,-20,18,30)+'</g>';
-      svg+='<g class="torso2"><animateTransform attributeName="transform" type="rotate" values="0 0 0;0 0 0;0 0 0" dur="1s"/></g>';
-      svg+='<g class="alift">'+anim(-16,40,-90,-90,T)+'<g transform="translate(-16 40)">'+ln(0,0,-12,-28)+'</g></g>';
-      svg+='<g class="aliftR">'+anim(16,40,90,90,T)+'<g transform="translate(16 40)">'+ln(0,0,12,-28)+'</g></g>';
-      svg+='<g transform="translate(120 78)">'+head(0,-26)+ln(0,-16,0,30)+'</g>';
-      svg+='<g transform="translate(120 108)">'+ln(-16,0,-6,34)+ln(16,0,6,34)+'</g>';
+      var T="2.6s";
+      var figr=biped({el:[0,-140,-140,0]},T);
+      svg+='<g transform="translate(120 118)">'+figr+'</g>';
+    }
+    else if(kind==="pullup"){
+      var T="3.4s";
+      svg+='<rect x="46" y="52" width="148" height="8" rx="4" fill="#4a4f59"/>';
+      // arms overhead: shoulders rotated 180 so limbs point up to the bar
+      var figr=biped({to:[0,0,0,0]},T);
+      // custom overhead arms (shoulders rotated up, elbows bend during pull)
+      var arms = J(-9,-40,[180,180,180,180],T, LIN(0,0,0,26)+J(0,26,[0,50,50,0],T,LIN(0,0,0,26)))+
+                 J(9,-40,[180,180,180,180],T, LIN(0,0,0,26)+J(0,26,[0,-50,-50,0],T,LIN(0,0,0,26)));
+      var body=J(0,0,Z,T, LIN(0,0,0,-46)+HEAD(0,-60))+
+               J(-7,0,Z,T, LIN(0,0,0,40)+J(0,40,Z,T,LIN(0,0,0,44)))+
+               J(7,0,Z,T, LIN(0,0,0,40)+J(0,40,Z,T,LIN(0,0,0,44)));
+      svg+=TY(52,52,T,'<g transform="translate(120 190)">'+arms+body+'</g>');
     }
     else if(kind==="dip"){
-      // triceps dip: body lowers between bent arms
-      svg+='<rect x="52" y="40" width="136" height="7" rx="3.5" fill="#4a4f59"/>';
-      svg+='<g class="bench"><animateTransform attributeName="transform" type="translate" values="0 0;0 0;0 12;0 12;0 0" keyTimes="0;.18;.5;.7;1" dur="'+T+'" repeatCount="indefinite"/>'+
-        '<g transform="translate(120 70)">'+
-          '<g class="a5">'+anim(-34,0,60,60,T)+'<g transform="translate(-34 0)">'+ln(0,0,-20,34)+'</g></g>'+
-          '<g class="a6">'+anim(34,0,-60,-60,T)+'<g transform="translate(34 0)">'+ln(0,0,20,34)+'</g></g>'+
-          '<g class="abod"><animateTransform attributeName="transform" type="translate" values="0 0;0 0;0 14;0 14;0 0" keyTimes="0;.18;.5;.7;1" dur="'+T+'" repeatCount="indefinite"/>'+
-            head(0,-40)+ln(0,-30,0,16)+ln(0,-12,-14,6)+ln(0,-12,14,6)+
-            ln(0,16,-10,42)+ln(0,16,10,42)+'</g>'+
-        '</g></g>';
+      var T="3s";
+      svg+='<rect x="70" y="110" width="100" height="10" rx="4" fill="#4a4f59"/>';
+      // arm supports fixed to bench, body dips
+      svg+='<g transform="translate(86 112)">'+LIN(0,0,0,40)+'</g>';
+      svg+='<g transform="translate(154 112)">'+LIN(0,0,0,40)+'</g>';
+      svg+=TY(20,20,T,'<g transform="translate(120 74)">'+
+        J(0,0,Z,T, LIN(0,0,0,-36)+HEAD(0,-50)+
+          J(-9,-40,Z,T, LIN(0,0,0,26)+J(0,26,[0,0,0,0],T,LIN(0,0,0,22)))+
+          J(9,-40,Z,T, LIN(0,0,0,26)+J(0,26,[0,0,0,0],T,LIN(0,0,0,22)))+
+          J(-6,0,Z,T, LIN(0,0,0,34))+J(6,0,Z,T, LIN(0,0,0,34))) +
+        '</g>');
     }
     else if(kind==="pushup"){
-      // plank: body pivots down/up at feet, arms bend
-      svg+='<g class="plank"><animateTransform attributeName="transform" type="rotate" values="0 40 236;0 40 236;12 40 236;12 40 236;0 40 236" keyTimes="0;.18;.5;.7;1" dur="'+T+'" repeatCount="indefinite"/>'+
-        '<g transform="translate(40 236) rotate(-12)">'+
-          '<g class="palm1">'+anim(18,-26,20,70,T)+'<g transform="translate(18 -26)">'+ln(0,0,-2,14)+'</g>'+'<g transform="translate(18 -26 )">'+ln(0,0,0,14)+'</g></g>'+
-          '<g class="palm2">'+anim(150,-26,-20,-70,T)+'<g transform="translate(150 -26)">'+ln(0,0,-2,14)+'</g>'+'<g transform="translate(150 -26)">'+ln(0,0,0,14)+'</g></g>'+
-          '<g class="pbody">'+head(82,-46)+'<g transform="translate(84 -38)">'+ln(0,0,0,40)+'</g>'+ln(84,-38,150,-26)+'</g>'+
-          '<g transform="translate(40 236)">'+ln(0,0,10,-22)+'</g>'+
-          '<g transform="translate(40 236)">'+ln(0,0,0,18)+'</g>'+
+      var T="2.8s";
+      // side plank: feet at right, shoulders toward front-left; pivot about feet
+      svg+='<g class="plank"><animateTransform attributeName="transform" type="rotate" values="0 196 240;0 196 240;10 196 240;10 196 240;0 196 240" keyTimes="'+_KT+'" calcMode="spline" keySplines="'+_SP+'" dur="'+T+'" repeatCount="indefinite"/>'+
+        '<g transform="translate(196 240)">'+
+          J(0,0,Z,T, LIN(0,0,-70,-8))+HEAD(-70,-8)+
+          J(-72,2,Z,T, LIN(0,0,-6,-26)+J(-6,-26,[-10,-55,-55,-10],T,LIN(0,0,0,-24)))+
+          J(-66,-6,Z,T, LIN(0,0,-6,-26)+J(-6,-26,[10,55,55,10],T,LIN(0,0,0,-24)))+
         '</g></g>';
     }
     else if(kind==="glute"){
-      // lying on back, pelvis lifts
-      svg+='<g class="gb"><animateTransform attributeName="transform" type="rotate" values="0 120 96;0 120 96;46 120 96;46 120 96;0 120 96" keyTimes="0;.18;.5;.7;1" dur="'+T+'" repeatCount="indefinite"/>'+
-        '<g transform="translate(120 96)">'+
-          head(0,60)+ln(0,52,0,18)+'</g>'+
-        '<g transform="translate(120 40)">'+ln(0,0,0,10)+'</g>'+
-        '<g class="glegs"><animateTransform attributeName="transform" type="rotate" values="0 120 96;0 120 96;46 120 96;46 120 96;0 120 96" dur="'+T+'"/></g>'+
-        '<g transform="translate(120 96)">'+ln(0,0,-14,56)+ln(-14,56,-22,62)+ln(0,0,14,56)+ln(14,56,22,62)+'</g></g>';
+      var T="3s";
+      // side lying, pelvis lifts
+      svg+='<g class="gb"><animateTransform attributeName="transform" type="rotate" values="0 66 236;0 66 236;-38 66 236;-38 66 236;0 66 236" keyTimes="'+_KT+'" calcMode="spline" keySplines="'+_SP+'" dur="'+T+'" repeatCount="indefinite"/>'+
+        '<g transform="translate(66 236)">'+
+          HEAD(-20,0)+LIN(0,0,-20,0)+
+          J(0,0,Z,T, LIN(0,0,-40,0))+
+          J(-40,0,Z,T, LIN(0,0,-16,24)+J(-16,24,Z,T,LIN(0,0,-18,16)))+
+          J(-40,0,Z,T, LIN(0,0,16,24)+J(16,24,Z,T,LIN(0,0,18,16)))+
+        '</g></g>';
     }
     else if(kind==="superm"){
-      // lying prone, arms+legs lift simultaneously, rocking at hips
-      svg+='<g class="sp"><animateTransform attributeName="transform" type="rotate" values="0 120 200;0 120 200;-20 120 200;-20 120 200;0 120 200" keyTimes="0;.18;.5;.7;1" dur="'+T+'" repeatCount="indefinite"/>'+
-        '<g transform="translate(120 200)">'+
-          '<g class="seArm1">'+anim(-40,0,120,200,T)+'<g transform="translate(-40 0)">'+ln(0,0,-40,0)+'</g></g>'+
-          '<g class="seArm2">'+anim(40,0,-120,-200,T)+'<g transform="translate(40 0)">'+ln(0,0,40,0)+'</g></g>'+
-          head(0,-64)+ln(0,-54,0,-12)+
-          '<g class="seLeg1">'+anim(-16,60,0,160,T)+'<g transform="translate(-16 60)">'+ln(0,0,-6,36)+'</g></g>'+
-          '<g class="seLeg2">'+anim(16,60,0,-160,T)+'<g transform="translate(16 60)">'+ln(0,0,6,36)+'</g></g>'+
+      var T="2.8s";
+      // prone, arms & legs lift together
+      svg+='<g class="spm"><animateTransform attributeName="transform" type="rotate" values="0 120 236;0 120 236;-12 120 236;-12 120 236;0 120 236" keyTimes="'+_KT+'" calcMode="spline" keySplines="'+_SP+'" dur="'+T+'" repeatCount="indefinite"/>'+
+        '<g transform="translate(120 236)">'+
+          LIN(0,0,-50,0)+HEAD(-60,0)+
+          J(-44,2,Z,T, LIN(0,-8,-44,-26))+J(-44,-2,Z,T, LIN(0,8,-44,26))+
+          J(2,2,Z,T, LIN(0,0,52,-6))+J(-2,2,Z,T, LIN(0,0,52,6))+
         '</g></g>';
     }
     else {
-      // good morning / row: torso pivots over straight legs, arms pull
-      svg+='<g class="gm"><animateTransform attributeName="transform" type="rotate" values="0 120 130;0 120 130;55 120 130;55 120 130;0 120 130" keyTimes="0;.18;.5;.7;1" dur="'+T+'" repeatCount="indefinite"/>'+
-        '<g transform="translate(120 130)">'+
-          head(0,-70)+ln(0,-60,0,-10)+
-          '<g class="a7">'+anim(-18,0,-60,80,T)+'<g transform="translate(-18 0)">'+ln(0,0,-20,-48)+'</g></g>'+
-          '<g class="a8">'+anim(18,0,60,-80,T)+'<g transform="translate(18 0)">'+ln(0,0,20,-48)+'</g></g>'+
-          '<g transform="translate(-10 0)">'+ln(0,0,-4,92)+'</g><g transform="translate(10 0)">'+ln(0,0,4,92)+'</g>'+
-        '</g></g>';
+      // row: bent-forward torso (lean down), arms pull to ribs
+      var T="3s";
+      var figr=biped({to:[0,0,0,0], sh:[0,-120,-120,0], el:[0,120,120,0]},T);
+      svg+='<g transform="translate(120 96)">'+figr+'</g>';
     }
     svg+='</svg>';
     return svg;
